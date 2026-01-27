@@ -5,6 +5,8 @@ import { Play, Trophy, Coins, Star, X, Video } from 'lucide-react';
 import { useGame } from '@/store/GameContext';
 import { adMobService } from '@/services/adMobService';
 import { t, getLanguage } from '@/utils/i18n';
+import { purchaseService } from '@/services/purchaseService';
+import { ShieldCheck, RefreshCw } from 'lucide-react';
 
 // Seeded random for stable background letters
 function seededRandom(seed: number): number {
@@ -16,6 +18,15 @@ const MenuScreen: React.FC = () => {
     const { progress, dispatch } = useGame();
     const [showAdConfirmation, setShowAdConfirmation] = useState(false);
     const [rewardNotification, setRewardNotification] = useState<string | null>(null);
+    const [isPremium, setIsPremium] = useState(purchaseService.getIsPremium());
+
+    React.useEffect(() => {
+        const handlePremiumChange = (e: any) => {
+            setIsPremium(e.detail);
+        };
+        window.addEventListener('premium_status_changed', handlePremiumChange);
+        return () => window.removeEventListener('premium_status_changed', handlePremiumChange);
+    }, []);
 
     // Generate stable background letters using seeded random
     const backgroundLetters = useMemo(() => {
@@ -161,14 +172,52 @@ const MenuScreen: React.FC = () => {
                     <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setShowAdConfirmation(true)}
-                        className="flex flex-col items-center group"
+                        className={`flex flex-col items-center group ${isPremium ? 'opacity-50 grayscale pointer-events-none' : ''}`}
                     >
                         <div className="w-14 h-14 bg-white border-3 border-[#0f172a] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
                             <Video className="w-6 h-6 text-[#0f172a] fill-[#fbbf24]" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[#64748b]">{t('freeCoins')}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#64748b]">{isPremium ? t('purchased') : t('freeCoins')}</span>
                     </motion.button>
                 </div>
+
+                {/* Remove Ads Banner */}
+                {!isPremium && (
+                    <motion.button
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={async () => {
+                            const success = await purchaseService.purchaseNoAds();
+                            if (!success) {
+                                setRewardNotification(t('error'));
+                                setTimeout(() => setRewardNotification(null), 3000);
+                            }
+                        }}
+                        className="w-full bg-[#fde047] border-3 border-[#0f172a] p-4 rounded-2xl flex items-center justify-between shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] group mt-4"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-white border-2 border-[#0f172a] rounded-xl flex items-center justify-center">
+                                <ShieldCheck className="w-6 h-6 text-[#0f172a]" />
+                            </div>
+                            <div className="text-left">
+                                <h4 className="text-sm font-black uppercase tracking-tighter leading-none">{t('removeAds')}</h4>
+                                <p className="text-[10px] font-bold text-[#0f172a]/60 uppercase leading-none mt-1">{t('removeAdsDesc')}</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black text-[#0f172a]/40 uppercase">{t('restorePurchases')}</span>
+                            <RefreshCw
+                                className="w-4 h-4 text-[#0f172a] opacity-40 group-hover:rotate-180 transition-transform duration-500 cursor-pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    purchaseService.restorePurchases();
+                                }}
+                            />
+                        </div>
+                    </motion.button>
+                )}
             </div>
 
             <AnimatePresence>

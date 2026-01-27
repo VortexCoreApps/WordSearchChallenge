@@ -10,6 +10,7 @@ import OnboardingScreen from '@/screens/OnboardingScreen';
 import TrophyAlbum from '@/screens/TrophyAlbum';
 import LevelSelection from '@/screens/LevelSelection';
 import { adMobService } from '@/services/adMobService';
+import { purchaseService } from '@/services/purchaseService';
 import { App as CapApp } from '@capacitor/app';
 
 const screenVariants = {
@@ -29,9 +30,10 @@ import AchievementToast from '@/components/ui/AchievementToast';
 const AppContent: React.FC = () => {
     const { state, progress, dispatch } = useGame();
 
-    // 0. Initialize AdMob ONLY ONCE on mount
+    // 0. Initialize AdMob and PurchaseService ONLY ONCE on mount
     React.useEffect(() => {
         adMobService.initialize();
+        purchaseService.initialize();
     }, []);
 
     React.useEffect(() => {

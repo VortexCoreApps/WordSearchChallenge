@@ -33,6 +33,10 @@ export interface Translations {
     watchAdDescription: string;
     later: string;
     watch: string;
+    removeAds: string;
+    removeAdsDesc: string;
+    restorePurchases: string;
+    purchased: string;
 
     // Game
     time: string;
@@ -127,6 +131,10 @@ const translations: Record<Language, Translations> = {
         watchAdDescription: 'Watch a short video to earn',
         later: 'Later',
         watch: 'Watch',
+        removeAds: 'No Ads',
+        removeAdsDesc: 'Remove all ads forever!',
+        restorePurchases: 'Restore',
+        purchased: 'Purchased',
 
         // Game
         time: 'Time',
@@ -220,6 +228,10 @@ const translations: Record<Language, Translations> = {
         watchAdDescription: 'Mira un breve video para ganar',
         later: 'Después',
         watch: 'Ver',
+        removeAds: 'Sin Anuncios',
+        removeAdsDesc: '¡Quita anuncios para siempre!',
+        restorePurchases: 'Restaurar',
+        purchased: 'Comprado',
 
         // Game
         time: 'Tiempo',

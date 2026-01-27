@@ -8,6 +8,7 @@ import {
     RewardAdOptions,
     RewardAdPluginEvents
 } from '@capacitor-community/admob';
+import { purchaseService } from './purchaseService';
 
 // Test IDs from official AdMob documentation
 export const AD_UNITS = {
@@ -79,6 +80,9 @@ class AdMobService {
         }
         if (!this.isOnline) {
             return { success: false, error: 'no_connection', message: 'No internet connection' };
+        }
+        if (purchaseService.getIsPremium()) {
+            return { success: false, error: 'unknown', message: 'User is premium, ads disabled' };
         }
         return { success: true };
     }
