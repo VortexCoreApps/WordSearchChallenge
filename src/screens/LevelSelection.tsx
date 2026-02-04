@@ -38,19 +38,19 @@ const LevelSelection: React.FC = () => {
     };
 
     return (
-        <div className="h-full bg-[#f8fafc] flex flex-col p-6 pb-24 max-w-lg mx-auto overflow-y-auto">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 max-w-lg mx-auto overflow-y-auto">
             <header className="flex items-center space-x-6 mb-8 mt-2 px-2">
                 <button
                     onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}
-                    className="p-2 text-slate-400 hover:text-slate-900 transition-colors"
+                    className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
                 >
                     <ArrowLeft className="w-7 h-7" />
                 </button>
                 <div>
-                    <h2 className="text-2xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
+                    <h2 className="text-2xl font-black text-[var(--color-text-primary)] uppercase italic tracking-tighter leading-none">
                         {t('appSubtitle') === 'CHALLENGE' ? 'Worlds' : 'Mundos'}
                     </h2>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2">
+                    <p className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.3em] mt-2">
                         {progress.completedLevelIds.length} Levels Found
                     </p>
                 </div>
@@ -72,37 +72,34 @@ const LevelSelection: React.FC = () => {
                             disabled={!unlocked}
                             onClick={() => {
                                 // For now, we can only start the "current" level or first uncompleted level in block
-                                // But to keep it simple with existing dispatch, we just show it.
-                                // If we want to allow picking ANY level, we need a sub-screen.
-                                // Let's just start the first incomplete level of this block.
                                 const nextInBlock = block.levels.find(l => !progress.completedLevelIds.includes(l.id)) || block.levels[0];
                                 dispatch({ type: 'START_LEVEL', payload: { level: nextInBlock, block: block } });
                             }}
-                            className={`puzzle-card p-5 text-left transition-all ${!unlocked ? 'opacity-60 grayscale' : 'hover:translate-x-1 hover:translate-y-1 hover:shadow-none'}`}
+                            className={`puzzle-card p-5 text-left transition-all ${!unlocked ? 'opacity-60 grayscale shadow-none' : 'hover:translate-x-1 hover:translate-y-1 hover:shadow-none'}`}
                         >
                             <div className="flex items-center space-x-4">
-                                <div className={`w-16 h-16 rounded-2xl border-2 border-slate-900 flex items-center justify-center relative ${unlocked ? (isCompleted ? 'bg-emerald-400' : 'bg-amber-400') : 'bg-slate-200'}`}>
+                                <div className={`w-16 h-16 rounded-2xl border-2 border-[var(--color-ink)] flex items-center justify-center relative ${unlocked ? (isCompleted ? 'bg-[#34d399]' : 'bg-[#fbbf24]') : 'bg-[var(--color-border)]'}`}>
                                     {unlocked ? (
-                                        hasTrophy ? <Trophy className="w-8 h-8 text-slate-900 fill-white/20" /> : <ChevronRight className="w-8 h-8 text-slate-900" />
+                                        hasTrophy ? <Trophy className="w-8 h-8 text-[#0f172a] fill-white/20" /> : <ChevronRight className="w-8 h-8 text-[#0f172a]" />
                                     ) : (
-                                        <Lock className="w-6 h-6 text-slate-400" />
+                                        <Lock className="w-6 h-6 text-[var(--color-text-muted)]" />
                                     )}
                                 </div>
 
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between mb-1">
-                                        <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight leading-none truncate">
+                                        <h3 className="text-lg font-black text-[var(--color-text-primary)] uppercase tracking-tight leading-none truncate">
                                             {block.name}
                                         </h3>
                                         {!unlocked && (
-                                            <span className="text-[8px] font-black uppercase text-slate-400 border border-slate-200 px-1.5 py-0.5 rounded">
+                                            <span className="text-[8px] font-black uppercase text-[var(--color-text-muted)] border border-[var(--color-border)] px-1.5 py-0.5 rounded">
                                                 Locked
                                             </span>
                                         )}
                                     </div>
 
                                     <div className="flex items-center space-x-3">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                        <span className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
                                             Levels {idx * 50 + 1}-{Math.min((idx + 1) * 50, 1000)}
                                         </span>
                                         <div className="flex items-center text-amber-500">
@@ -113,11 +110,11 @@ const LevelSelection: React.FC = () => {
 
                                     {/* Progress Bar */}
                                     {unlocked && (
-                                        <div className="mt-3 h-2 bg-slate-100 rounded-full border border-slate-200 overflow-hidden relative">
+                                        <div className="mt-3 h-2 bg-[var(--color-background)] rounded-full border border-[var(--color-border)] overflow-hidden relative">
                                             <motion.div
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${(stats.completedCount / stats.totalCount) * 100}%` }}
-                                                className={`absolute inset-y-0 left-0 ${isCompleted ? 'bg-emerald-400' : 'bg-amber-400'}`}
+                                                className={`absolute inset-y-0 left-0 ${isCompleted ? 'bg-[#34d399]' : 'bg-[#fbbf24]'}`}
                                             />
                                         </div>
                                     )}

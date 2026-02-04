@@ -146,7 +146,7 @@ const OnboardingScreen: React.FC = () => {
     ];
 
     return (
-        <div className="h-full bg-[#f8fafc] flex flex-col p-8 text-center justify-between font-sans overflow-hidden">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-8 text-center justify-between font-sans overflow-hidden">
             {/* Header / Title Area */}
             <div className="pt-8">
                 <AnimatePresence mode="wait">
@@ -157,7 +157,7 @@ const OnboardingScreen: React.FC = () => {
                         exit={{ y: 20, opacity: 0 }}
                         className="max-w-xs mx-auto"
                     >
-                        <h2 className="text-4xl font-black text-[#0f172a] uppercase italic tracking-tighter leading-none mb-4">
+                        <h2 className="text-4xl font-black text-[var(--color-text-primary)] uppercase italic tracking-tighter leading-none mb-4">
                             {t(steps[currentStep].title as any) || steps[currentStep].title}
                         </h2>
                         <div className="h-1.5 w-16 bg-[#fbbf24] mx-auto rounded-full mb-6" />
@@ -176,7 +176,10 @@ const OnboardingScreen: React.FC = () => {
                         transition={{ type: 'spring', damping: 15 }}
                         className="relative z-10"
                     >
-                        {steps[currentStep].visual}
+                        {/* Wrapper for step visuals to inject theme context if needed */}
+                        <div className="text-[var(--color-ink)]">
+                            {steps[currentStep].visual}
+                        </div>
                     </motion.div>
                 </AnimatePresence>
 
@@ -184,7 +187,7 @@ const OnboardingScreen: React.FC = () => {
                 <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]">
                     <div className="grid grid-cols-4 gap-4 h-full w-full rotate-12 scale-150">
                         {Array.from({ length: 16 }).map((_, i) => (
-                            <div key={i} className="text-4xl font-black">?</div>
+                            <div key={i} className="text-4xl font-black text-[var(--color-ink)]">?</div>
                         ))}
                     </div>
                 </div>
@@ -200,7 +203,7 @@ const OnboardingScreen: React.FC = () => {
                         exit={{ y: -20, opacity: 0 }}
                         className="mb-8"
                     >
-                        <p className="text-[#64748b] font-bold text-lg leading-tight px-4">
+                        <p className="text-[var(--color-text-secondary)] font-bold text-lg leading-tight px-4">
                             {t(steps[currentStep].description as any) || steps[currentStep].description}
                         </p>
                     </motion.div>
@@ -213,7 +216,7 @@ const OnboardingScreen: React.FC = () => {
                             key={i}
                             animate={{
                                 width: i === currentStep ? 32 : 8,
-                                backgroundColor: i === currentStep ? '#0f172a' : '#cbd5e1'
+                                backgroundColor: i === currentStep ? 'var(--color-ink)' : 'var(--color-border)'
                             }}
                             className="h-2 rounded-full cursor-pointer"
                             onClick={() => setCurrentStep(i)}
@@ -223,7 +226,7 @@ const OnboardingScreen: React.FC = () => {
 
                 <button
                     onClick={handleNext}
-                    className="w-full puzzle-btn-outline py-5 flex items-center justify-center gap-3 text-xl bg-white border-4 border-[#0f172a] shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
+                    className="w-full py-5 flex items-center justify-center gap-3 text-xl bg-[var(--color-surface)] border-4 border-[var(--color-ink)] text-[var(--color-text-primary)] shadow-[8px_8px_0px_0px_var(--shadow-color)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all rounded-3xl"
                 >
                     <span className="font-black uppercase italic">
                         {currentStep === steps.length - 1 ? t('get_started') || "Let's Play!" : t('next') || "Next Step"}

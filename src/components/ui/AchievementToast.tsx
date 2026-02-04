@@ -32,7 +32,7 @@ const AchievementToast: React.FC = () => {
                     exit={{ y: -100, opacity: 0, scale: 0.9 }}
                     className="fixed top-10 left-0 right-0 z-[100] flex justify-center px-6 pointer-events-none"
                 >
-                    <div className="bg-[#0f172a] text-white p-4 rounded-2xl flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-2 border-[#fbbf24] max-w-sm pointer-events-auto">
+                    <div className="bg-[var(--color-ink)] text-[var(--color-paper)] p-4 rounded-2xl flex items-center gap-4 shadow-[0_20px_50px_var(--color-shadow)] border-2 border-[#fbbf24] max-w-sm pointer-events-auto">
                         <div className="w-12 h-12 bg-[#fbbf24] rounded-xl flex items-center justify-center flex-shrink-0">
                             {React.createElement(AchievementIcons[achievement.icon] || Award, {
                                 className: "w-7 h-7 text-[#0f172a]"
@@ -45,7 +45,7 @@ const AchievementToast: React.FC = () => {
                             <h3 className="text-sm font-black italic uppercase leading-tight">
                                 {achievement.getName()}
                             </h3>
-                            <p className="text-[11px] text-[#94a3b8] font-medium">
+                            <p className="text-[11px] text-[var(--color-text-secondary)] font-medium">
                                 {achievement.getDescription()}
                             </p>
                         </div>

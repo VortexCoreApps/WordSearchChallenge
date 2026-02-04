@@ -11,9 +11,9 @@ interface Props {
 const WordList: React.FC<Props> = ({ words, category }) => {
     return (
         <div className="w-full max-w-sm mt-3 px-4">
-            <div className="bg-white border-2 border-[#0f172a] rounded-2xl shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] overflow-hidden relative">
+            <div className="bg-[var(--color-surface)] border-2 border-[var(--color-ink)] rounded-2xl shadow-[6px_6px_0px_0px_var(--shadow-color)] overflow-hidden relative">
                 {category && (
-                    <div className="bg-[#14b8a6] border-b-2 border-[#0f172a] py-1.5 px-6">
+                    <div className="bg-[#14b8a6] border-b-2 border-[var(--color-ink)] py-1.5 px-6">
                         <h4 className="text-white text-[10px] font-black uppercase tracking-[0.3em] text-center">
                             {category}
                         </h4>
@@ -31,8 +31,8 @@ const WordList: React.FC<Props> = ({ words, category }) => {
                             >
                                 <span
                                     className={`text-[11px] font-black uppercase transition-all duration-300 relative ${w.found
-                                        ? 'text-[#cbd5e1] italic scale-95'
-                                        : 'text-[#0f172a]'
+                                        ? 'text-[var(--color-text-muted)] italic scale-95'
+                                        : 'text-[var(--color-text-primary)]'
                                         }`}
                                     style={{ fontFamily: "'Outfit', sans-serif" }}
                                 >
@@ -41,7 +41,7 @@ const WordList: React.FC<Props> = ({ words, category }) => {
                                         <motion.div
                                             initial={{ width: 0 }}
                                             animate={{ width: '110%' }}
-                                            className="absolute top-1/2 left-[-5%] h-[2px] bg-[#94a3b8] -translate-y-1/2 opacity-50"
+                                            className="absolute top-1/2 left-[-5%] h-[2px] bg-[var(--color-text-muted)] -translate-y-1/2 opacity-50"
                                         />
                                     )}
                                 </span>
@@ -51,7 +51,7 @@ const WordList: React.FC<Props> = ({ words, category }) => {
                 </div>
 
                 {/* Subtle Paper Texture Background */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#0f172a_1px,transparent_1px)] [background-size:16px_16px]" />
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(var(--color-ink)_1px,transparent_1px)] [background-size:16px_16px]" />
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GameProvider, useGame } from './store/GameContext';
 import MenuScreen from '@/screens/MenuScreen';
@@ -29,6 +29,18 @@ import AchievementToast from '@/components/ui/AchievementToast';
 
 const AppContent: React.FC = () => {
     const { state, progress, dispatch } = useGame();
+    const [showCircleTransition, setShowCircleTransition] = useState(false);
+    const [prevView, setPrevView] = useState(state.view);
+
+    // Detect menu <-> game transitions
+    useEffect(() => {
+        if ((prevView === 'menu' && state.view === 'game') ||
+            (prevView === 'game' && state.view === 'menu')) {
+            setShowCircleTransition(true);
+            setTimeout(() => setShowCircleTransition(false), 1200);
+        }
+        setPrevView(state.view);
+    }, [state.view]);
 
     // 0. Initialize AdMob and PurchaseService ONLY ONCE on mount
     React.useEffect(() => {
@@ -50,15 +62,33 @@ const AppContent: React.FC = () => {
             }
         };
 
-        // 2. Capacitor (Native) App State Logic
-        const setupNativePause = async () => {
+        // 2. Capacitor (Native) App State & Back Button Logic
+        const setupNativeListeners = async () => {
             try {
-                const listener = await CapApp.addListener('appStateChange', ({ isActive }) => {
+                // Pause when backgrounded
+                const stateListener = await CapApp.addListener('appStateChange', ({ isActive }) => {
                     if (!isActive && state.view === 'game') {
                         dispatch({ type: 'PAUSE_GAME' });
                     }
                 });
-                return listener;
+
+                // Handle Hardware Back Button
+                const backListener = await CapApp.addListener('backButton', () => {
+                    if (state.view === 'menu' || state.view === 'onboarding' || state.view === 'splash') {
+                        CapApp.exitApp();
+                    } else if (state.view === 'game') {
+                        if (state.isPaused) {
+                            dispatch({ type: 'SET_VIEW', payload: 'menu' });
+                        } else {
+                            dispatch({ type: 'PAUSE_GAME' });
+                        }
+                    } else {
+                        // All other sub-screens go back to menu
+                        dispatch({ type: 'SET_VIEW', payload: 'menu' });
+                    }
+                });
+
+                return { stateListener, backListener };
             } catch (error) {
                 console.warn('Capacitor App plugin not available, falling back to Web API');
                 return null;
@@ -67,15 +97,18 @@ const AppContent: React.FC = () => {
 
         document.addEventListener('visibilitychange', handleVisibilityChange);
         window.addEventListener('blur', handleBlur);
-        let nativeListener: any = null;
-        setupNativePause().then(l => nativeListener = l);
+        let listeners: any = null;
+        setupNativeListeners().then(l => listeners = l);
 
         return () => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('blur', handleBlur);
-            if (nativeListener) nativeListener.remove();
+            if (listeners) {
+                listeners.stateListener.remove();
+                listeners.backListener.remove();
+            }
         };
-    }, [state.view, dispatch]);
+    }, [state.view, state.isPaused, dispatch]);
 
     React.useEffect(() => {
         if (state.view === 'splash') {
@@ -91,7 +124,7 @@ const AppContent: React.FC = () => {
     }, [state.view, progress.hasSeenTutorial, dispatch]);
 
     return (
-        <div className="relative h-full w-full bg-[#f8fafc] text-[#0f172a] font-sans selection:bg-[#fde047] overflow-hidden no-select">
+        <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select pt-[var(--safe-top)] pb-[var(--safe-bottom)] pl-[var(--safe-left)] pr-[var(--safe-right)]">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={state.view}
@@ -110,6 +143,24 @@ const AppContent: React.FC = () => {
                     {state.view === 'onboarding' && <OnboardingScreen />}
                     {state.view === 'levels' && <LevelSelection />}
                 </motion.div>
+            </AnimatePresence>
+
+            {/* Circular Expand Transition */}
+            <AnimatePresence>
+                {showCircleTransition && (
+                    <div className="fixed inset-0 z-[200] pointer-events-none flex items-center justify-center">
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: [0, 3, 0] }}
+                            transition={{
+                                duration: 1,
+                                times: [0, 0.5, 1],
+                                ease: [0.43, 0.13, 0.23, 0.96]
+                            }}
+                            className="w-[100vmax] h-[100vmax] rounded-full bg-[var(--color-background)]"
+                        />
+                    </div>
+                )}
             </AnimatePresence>
 
             {/* Achievement Notifications */}

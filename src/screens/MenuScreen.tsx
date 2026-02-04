@@ -36,25 +36,24 @@ const MenuScreen: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-full flex flex-col items-center justify-between max-w-lg mx-auto bg-[#f8fafc] overflow-hidden relative font-sans p-8 pb-24">
+        <div className="h-full flex flex-col items-center justify-between max-w-lg mx-auto bg-[var(--color-background)] overflow-hidden relative font-sans p-8 pb-24">
             {/* Thematic Background: Letter Grid Pattern */}
             <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none flex flex-wrap content-start p-4">
                 {backgroundLetters.map((letter, i) => (
-                    <span key={i} className="w-8 h-8 flex items-center justify-center font-black text-xs">
+                    <span key={i} className="w-8 h-8 flex items-center justify-center font-black text-xs text-[var(--color-ink)]">
                         {letter}
                     </span>
                 ))}
             </div>
 
-            <header className="flex flex-col items-center mt-8 w-full z-10">
+            <header className="flex flex-col items-center mt-8 mb-8 w-full z-10">
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     className="mb-4 relative"
                 >
-                    <div className="absolute inset-0 bg-[#fbbf24] opacity-20 blur-xl rounded-full animate-pulse" />
-                    <div className="w-20 h-20 bg-white border-4 border-[#0f172a] rounded-3xl flex items-center justify-center shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rotate-[-6deg] relative overflow-hidden">
-                        <span className="text-4xl font-black text-[#0f172a] italic">W</span>
+                    <div className="w-20 h-20 bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-3xl flex items-center justify-center shadow-[8px_8px_0px_0px_var(--shadow-color)] rotate-[-6deg] relative overflow-hidden">
+                        <span className="text-4xl font-black text-[var(--color-ink)] italic">W</span>
                     </div>
                 </motion.div>
                 <div className="relative inline-block px-4">
@@ -63,9 +62,9 @@ const MenuScreen: React.FC = () => {
                         animate={{ width: '100%' }}
                         className="absolute bottom-1 left-0 h-4 bg-[#fde047] opacity-60 z-0"
                     />
-                    <h1 className="text-4xl font-black text-[#0f172a] uppercase italic tracking-tighter text-center leading-none relative z-10">
+                    <h1 className="text-4xl font-black text-[var(--color-text-primary)] uppercase italic tracking-tighter text-center leading-none relative z-10">
                         {t('appTitle')}<br />
-                        <span className="text-xl tracking-[0.2em] font-black text-[#64748b] not-italic block mt-1">{t('appSubtitle')}</span>
+                        <span className="text-xl tracking-[0.2em] font-black text-[var(--color-text-secondary)] not-italic block mt-1">{t('appSubtitle')}</span>
                     </h1>
                 </div>
             </header>
@@ -75,9 +74,9 @@ const MenuScreen: React.FC = () => {
                 <div className="flex justify-center space-x-4">
                     <div className="relative group">
                         <div className="absolute inset-0 bg-[#fbbf24] translate-x-1 translate-y-1 rounded-2xl transition-all" />
-                        <div className="relative bg-white border-2 border-[#0f172a] px-6 py-3 rounded-2xl flex items-center space-x-3">
-                            <Coins className="w-5 h-5 text-[#0f172a] fill-[#fbbf24]" />
-                            <span className="font-black text-[#0f172a] text-xl tabular-nums">{progress.coins}</span>
+                        <div className="relative bg-[var(--color-surface)] border-2 border-[var(--color-ink)] px-6 py-3 rounded-2xl flex items-center space-x-3">
+                            <Coins className="w-5 h-5 text-[var(--color-ink)] fill-[#fbbf24]" />
+                            <span className="font-black text-[var(--color-text-primary)] text-xl tabular-nums">{progress.coins}</span>
                         </div>
                         <AnimatePresence>
                             {rewardNotification && (
@@ -99,9 +98,9 @@ const MenuScreen: React.FC = () => {
                     </div>
                     <div className="relative group">
                         <div className="absolute inset-0 bg-[#f43f5e] translate-x-1 translate-y-1 rounded-2xl transition-all" />
-                        <div className="relative bg-white border-2 border-[#0f172a] px-6 py-3 rounded-2xl flex items-center space-x-3">
-                            <Star className="w-5 h-5 text-[#0f172a] fill-[#f43f5e]" />
-                            <span className="font-black text-[#0f172a] text-xl tabular-nums">
+                        <div className="relative bg-[var(--color-surface)] border-2 border-[var(--color-ink)] px-6 py-3 rounded-2xl flex items-center space-x-3">
+                            <Star className="w-5 h-5 text-[var(--color-ink)] fill-[#f43f5e]" />
+                            <span className="font-black text-[var(--color-text-primary)] text-xl tabular-nums">
                                 {Object.values(progress.stars).reduce((a, b) => a + b, 0)}
                             </span>
                         </div>
@@ -113,21 +112,21 @@ const MenuScreen: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => dispatch({ type: 'START_CURRENT_LEVEL' })}
-                    className="w-full bg-white border-4 border-[#0f172a] p-8 rounded-[2.5rem] flex flex-col items-center justify-center relative shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] group"
+                    className="w-full bg-[var(--color-surface)] border-4 border-[var(--color-ink)] p-8 rounded-[2.5rem] flex flex-col items-center justify-center relative shadow-[12px_12px_0px_0px_var(--shadow-color)] group"
                 >
                     {/* Highlighter Marks decoration */}
                     <div className="absolute top-6 left-8 w-24 h-6 bg-[#34d399] opacity-20 rounded-full -rotate-12 blur-sm" />
                     <div className="absolute bottom-10 right-10 w-32 h-8 bg-[#38bdf8] opacity-20 rounded-full rotate-6 blur-sm" />
 
-                    <div className="w-16 h-16 bg-[#0f172a] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <Play className="w-8 h-8 text-white fill-white ml-1" />
+                    <div className="w-16 h-16 bg-[var(--color-ink)] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Play className="w-8 h-8 text-[var(--color-paper)] fill-[var(--color-paper)] ml-1" />
                     </div>
 
                     <div className="relative px-4">
                         <div className="absolute -inset-1 bg-[#fde047] opacity-60 rounded-lg -rotate-1" />
-                        <h3 className="text-2xl font-black uppercase italic tracking-tighter relative z-10 text-[#0f172a]">{t('levelLabel')} {progress.currentLevelId}</h3>
+                        <h3 className="text-2xl font-black uppercase italic tracking-tighter relative z-10 text-[var(--color-text-primary)]">{t('levelLabel')} {progress.currentLevelId}</h3>
                     </div>
-                    <p className="text-[10px] font-bold text-[#94a3b8] uppercase tracking-[0.4em] mt-3">{t('readyToFind')}</p>
+                    <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-[0.4em] mt-3">{t('readyToFind')}</p>
                 </motion.button>
 
                 {/* Secondary Actions */}
@@ -137,10 +136,10 @@ const MenuScreen: React.FC = () => {
                         onClick={() => dispatch({ type: 'SET_VIEW', payload: 'levels' })}
                         className="flex flex-col items-center group"
                     >
-                        <div className="w-14 h-14 bg-white border-3 border-[#0f172a] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
-                            <Star className="w-6 h-6 text-[#0f172a] fill-[#34d399]" />
+                        <div className="w-14 h-14 bg-[var(--color-surface)] border-3 border-[var(--color-ink)] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_var(--shadow-color)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
+                            <Star className="w-6 h-6 text-[var(--color-ink)] fill-[#34d399]" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[#64748b]">{t('appSubtitle') === 'CHALLENGE' ? 'Levels' : 'Niveles'}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">{t('appSubtitle') === 'CHALLENGE' ? 'Levels' : 'Niveles'}</span>
                     </motion.button>
 
                     <motion.button
@@ -148,11 +147,11 @@ const MenuScreen: React.FC = () => {
                         onClick={() => dispatch({ type: 'SET_VIEW', payload: 'album' })}
                         className="flex flex-col items-center group"
                     >
-                        <div className="w-14 h-14 bg-white border-3 border-[#0f172a] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
+                        <div className="w-14 h-14 bg-[var(--color-surface)] border-3 border-[var(--color-ink)] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_var(--shadow-color)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
                             <div className="relative w-7 h-7 flex items-center justify-center">
                                 <svg
                                     viewBox="0 0 24 24"
-                                    className="w-full h-full fill-[#fbbf24] stroke-[#0f172a]"
+                                    className="w-full h-full fill-[#fbbf24] stroke-[var(--color-ink)]"
                                     strokeWidth="2.5"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -166,7 +165,7 @@ const MenuScreen: React.FC = () => {
                                 </svg>
                             </div>
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[#64748b]">{t('trophies')}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">{t('trophies')}</span>
                     </motion.button>
 
                     <motion.button
@@ -174,10 +173,10 @@ const MenuScreen: React.FC = () => {
                         onClick={() => setShowAdConfirmation(true)}
                         className={`flex flex-col items-center group ${isPremium ? 'opacity-50 grayscale pointer-events-none' : ''}`}
                     >
-                        <div className="w-14 h-14 bg-white border-3 border-[#0f172a] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
-                            <Video className="w-6 h-6 text-[#0f172a] fill-[#fbbf24]" />
+                        <div className="w-14 h-14 bg-[var(--color-surface)] border-3 border-[var(--color-ink)] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_var(--shadow-color)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
+                            <Video className="w-6 h-6 text-[var(--color-ink)] fill-[#fbbf24]" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[#64748b]">{isPremium ? t('purchased') : t('freeCoins')}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">{isPremium ? t('purchased') : t('freeCoins')}</span>
                     </motion.button>
                 </div>
 
@@ -234,11 +233,11 @@ const MenuScreen: React.FC = () => {
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.9, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-white border-4 border-[#0f172a] rounded-3xl p-6 w-full max-w-sm shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] relative"
+                            className="bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-3xl p-6 w-full max-w-sm shadow-[8px_8px_0px_0px_var(--shadow-color)] relative"
                         >
                             <button
                                 onClick={() => setShowAdConfirmation(false)}
-                                className="absolute -top-3 -right-3 bg-[#f43f5e] border-2 border-[#0f172a] rounded-full p-2 text-white shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] hover:scale-110 active:scale-90 transition-transform"
+                                className="absolute -top-3 -right-3 bg-[#f43f5e] border-2 border-[var(--color-ink)] rounded-full p-2 text-white shadow-[2px_2px_0px_0px_var(--shadow-color)] hover:scale-110 active:scale-90 transition-transform"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -248,17 +247,17 @@ const MenuScreen: React.FC = () => {
                                     <Video className="w-8 h-8 text-[#0f172a]" />
                                 </div>
 
-                                <h3 className="text-2xl font-black uppercase italic text-[#0f172a] mb-2 leading-none">
+                                <h3 className="text-2xl font-black uppercase italic text-[var(--color-text-primary)] mb-2 leading-none">
                                     {t('watchAd')}
                                 </h3>
-                                <p className="text-[#64748b] font-bold text-sm mb-6 max-w-[200px]">
+                                <p className="text-[var(--color-text-secondary)] font-bold text-sm mb-6 max-w-[200px]">
                                     {t('watchAdDescription')} <span className="text-[#059669]">100 {t('freeCoins')}</span>!
                                 </p>
 
                                 <div className="flex gap-3 w-full">
                                     <button
                                         onClick={() => setShowAdConfirmation(false)}
-                                        className="flex-1 font-black text-[#64748b] uppercase tracking-wide py-3 hover:bg-slate-100 rounded-xl transition-colors"
+                                        className="flex-1 font-black text-[var(--color-text-secondary)] uppercase tracking-wide py-3 hover:bg-black/5 rounded-xl transition-colors"
                                     >
                                         {t('later')}
                                     </button>
@@ -291,9 +290,9 @@ const MenuScreen: React.FC = () => {
                                                 setTimeout(() => setRewardNotification(null), 3000);
                                             }
                                         }}
-                                        className="flex-[2] bg-[#34d399] border-2 border-[#0f172a] rounded-xl py-3 font-black text-[#0f172a] uppercase tracking-wide shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(15,23,42,1)] transition-all flex items-center justify-center gap-2"
+                                        className="flex-[2] bg-[#34d399] border-2 border-[var(--color-ink)] rounded-xl py-3 font-black text-[var(--color-ink)] uppercase tracking-wide shadow-[4px_4px_0px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_var(--shadow-color)] transition-all flex items-center justify-center gap-2"
                                     >
-                                        <Play className="w-4 h-4 fill-[#0f172a]" />
+                                        <Play className="w-4 h-4 fill-[var(--color-ink)]" />
                                         {t('watch')}
                                     </motion.button>
                                 </div>

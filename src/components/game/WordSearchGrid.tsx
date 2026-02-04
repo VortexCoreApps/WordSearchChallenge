@@ -71,7 +71,7 @@ const GridCell = React.memo<CellProps>(({
                     key={i}
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 0.7 }}
-                    className="absolute inset-[8%] rounded-md z-0 mix-blend-multiply ring-1 ring-[#0f172a]/5"
+                    className={`absolute inset-[8%] rounded-md z-0 ring-1 ring-[#0f172a]/5 ${document.documentElement.classList.contains('dark') ? 'mix-blend-lighten opacity-40' : 'mix-blend-multiply opacity-70'}`}
                     style={{ backgroundColor: color }}
                 />
             ))}
@@ -79,9 +79,9 @@ const GridCell = React.memo<CellProps>(({
             <motion.span
                 animate={{ rotate: -rotation }}
                 transition={{ type: "spring", stiffness: 260, damping: 26 }}
-                className={`relative z-10 transition-all duration-200 ${isActive ? 'text-[#0f172a] scale-125 font-black' :
-                        isHinted ? 'text-[#0f172a] font-black' :
-                            'text-[#334155]'
+                className={`relative z-10 transition-all duration-200 ${isActive ? 'text-[var(--color-ink)] scale-125 font-black' :
+                    isHinted ? 'text-[var(--color-ink)] font-black' :
+                        'text-[var(--color-text-secondary)]'
                     }`}
             >
                 {letter}
@@ -236,7 +236,7 @@ const WordSearchGrid: React.FC<Props> = ({ grid, onWordFound, foundWordsCells, r
                 ref={containerRef}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="relative w-full h-full bg-white border-4 border-[#0f172a] rounded-2xl p-2 no-select touch-none shadow-[8px_8px_0px_0px_rgba(15,23,42,1)]"
+                className="relative w-full h-full bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-2xl p-2 no-select touch-none shadow-[8px_8px_0px_0px_var(--shadow-color)]"
                 onMouseDown={handleStart}
                 onMouseMove={handleMove}
                 onMouseUp={handleEnd}
@@ -277,7 +277,7 @@ const WordSearchGrid: React.FC<Props> = ({ grid, onWordFound, foundWordsCells, r
                 {/* Grid Lines for that classic puzzle look */}
                 <div className="absolute inset-2 pointer-events-none opacity-[0.03] flex flex-col justify-between">
                     {Array.from({ length: grid.length - 1 }).map((_, i) => (
-                        <div key={i} className="w-full h-[1px] bg-slate-900" />
+                        <div key={i} className="w-full h-[1px] bg-[var(--color-ink)]" />
                     ))}
                 </div>
             </motion.div>

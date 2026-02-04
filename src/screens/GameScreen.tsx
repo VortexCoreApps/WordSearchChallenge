@@ -35,7 +35,7 @@ const GameScreen: React.FC = () => {
     if (!currentLevel) return null;
 
     return (
-        <div className="h-full bg-[#f8fafc] flex flex-col p-4 pb-24 touch-none max-w-lg mx-auto overflow-hidden relative">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-24 touch-none max-w-lg mx-auto overflow-hidden relative">
             <AnimatePresence>
                 {feedback && (
                     <motion.div
@@ -45,7 +45,7 @@ const GameScreen: React.FC = () => {
                         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] pointer-events-none"
                     >
                         <div
-                            className="text-white px-10 py-4 rounded-[2rem] border-4 border-[#0f172a] shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] rotate-[-4deg]"
+                            className="text-white px-10 py-4 rounded-[2rem] border-4 border-[var(--color-ink)] shadow-[8px_8px_0px_0px_var(--shadow-color)] rotate-[-4deg]"
                             style={{
                                 fontFamily: "'Outfit', sans-serif",
                                 backgroundColor: feedback.color
@@ -63,41 +63,41 @@ const GameScreen: React.FC = () => {
                 <div className="flex justify-start">
                     <button
                         onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}
-                        className="p-2 text-[#94a3b8] hover:text-[#0f172a] transition-colors"
+                        className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
                     >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                 </div>
                 <div className="text-center">
-                    <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-[0.3em] mb-0.5">
+                    <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.3em] mb-0.5">
                         {currentBlock?.name || 'Journey'}
                     </p>
-                    <h3 className="text-base font-black text-[#0f172a] uppercase italic leading-tight">
+                    <h3 className="text-base font-black text-[var(--color-text-primary)] uppercase italic leading-tight">
                         {t('levelLabel')} {currentLevel.id}
                     </h3>
                 </div>
                 <div className="flex justify-end">
-                    <div className="bg-white border-2 border-[#0f172a] px-3 py-1 rounded-xl shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] flex items-center space-x-1.5 scale-75 origin-right">
+                    <div className="bg-[var(--color-surface)] border-2 border-[var(--color-ink)] px-3 py-1 rounded-xl shadow-[3px_3px_0px_0px_var(--shadow-color)] flex items-center space-x-1.5 scale-75 origin-right">
                         <Coins className="w-4 h-4 text-[#fbbf24] fill-[#fbbf24]" />
-                        <span className="font-black text-[#0f172a] text-sm">{progress.coins}</span>
+                        <span className="font-black text-[var(--color-text-primary)] text-sm">{progress.coins}</span>
                     </div>
                 </div>
             </header>
 
             <div className="flex items-center justify-center space-x-12 mb-4">
                 <div className="text-center">
-                    <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest mb-1">{t('time')}</p>
-                    <div className="flex items-center space-x-2 text-[#0f172a]">
+                    <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1">{t('time')}</p>
+                    <div className="flex items-center space-x-2 text-[var(--color-text-primary)]">
                         <Clock className="w-3.5 h-3.5" />
                         <span className="text-lg font-black tabular-nums tracking-tighter">
                             {formatTime(timeElapsed)}
                         </span>
                     </div>
                 </div>
-                <div className="w-px h-6 bg-[#e2e8f0]" />
+                <div className="w-px h-6 bg-[var(--color-border)]" />
                 <div className="text-center">
-                    <p className="text-[8px] font-black text-[#94a3b8] uppercase tracking-widest mb-1">{t('progress')}</p>
-                    <div className="flex items-center justify-center space-x-2 text-[#0f172a]">
+                    <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1">{t('progress')}</p>
+                    <div className="flex items-center justify-center space-x-2 text-[var(--color-text-primary)]">
                         <span className="text-lg font-black tabular-nums tracking-tighter">
                             {wordsInfo.filter(w => w.found).length}/{wordsInfo.length}
                         </span>
@@ -125,19 +125,19 @@ const GameScreen: React.FC = () => {
                 <motion.button
                     whileTap={{ scale: 0.9 }}
                     onClick={() => dispatch({ type: 'TOGGLE_PAUSE' })}
-                    className="w-16 h-16 bg-white border-2 border-[#0f172a] rounded-2xl flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                    className="w-16 h-16 bg-[var(--color-surface)] border-2 border-[var(--color-ink)] rounded-2xl flex items-center justify-center shadow-[6px_6px_0px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
                 >
-                    <Pause className="w-6 h-6 text-[#0f172a] fill-[#0f172a]" />
+                    <Pause className="w-6 h-6 text-[var(--color-ink)] fill-[var(--color-ink)]" />
                 </motion.button>
 
                 <div className="relative">
                     <motion.button
                         whileTap={{ scale: 0.95 }}
-                        className={`group relative overflow-hidden px-10 h-16 rounded-[2rem] border-2 border-[#0f172a] flex items-center justify-center space-x-3 shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] transition-all ${showHintMenu ? 'bg-[#0f172a] text-white translate-x-[4px] translate-y-[4px] shadow-none' : 'bg-[#fbbf24] text-[#0f172a]'
+                        className={`group relative overflow-hidden px-10 h-16 rounded-[2rem] border-2 border-[var(--color-ink)] flex items-center justify-center space-x-3 shadow-[8px_8px_0px_0px_var(--shadow-color)] transition-all ${showHintMenu ? 'bg-[var(--color-ink)] text-[var(--color-paper)] translate-x-[4px] translate-y-[4px] shadow-none' : 'bg-[#fbbf24] text-[#0f172a]'
                             }`}
                         onClick={() => setShowHintMenu(!showHintMenu)}
                     >
-                        <Lightbulb className={`w-7 h-7 ${showHintMenu ? 'text-white' : 'text-[#0f172a] fill-[#fde047]'}`} />
+                        <Lightbulb className={`w-7 h-7 ${showHintMenu ? 'text-[var(--color-paper)]' : 'text-[#0f172a] fill-[#fde047]'}`} />
                         <span className="text-xl font-black uppercase italic tracking-tighter">{t('hints')}</span>
                         {!showHintMenu && (
                             <div className="absolute top-0 right-0 w-2 h-2 bg-[#f43f5e] rounded-full mt-2 mr-6 animate-pulse" />
@@ -150,21 +150,21 @@ const GameScreen: React.FC = () => {
                                 initial={{ y: 20, opacity: 0, scale: 0.9 }}
                                 animate={{ y: 0, opacity: 1, scale: 1 }}
                                 exit={{ y: 20, opacity: 0, scale: 0.9 }}
-                                className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-white border-4 border-[#0f172a] p-5 rounded-[2.5rem] shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] w-72 z-40"
+                                className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-[var(--color-surface)] border-4 border-[var(--color-ink)] p-5 rounded-[2.5rem] shadow-[12px_12px_0px_0px_var(--shadow-color)] w-72 z-40"
                             >
-                                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-white border-b-4 border-r-4 border-[#0f172a] rotate-45" />
-                                <p className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.3em] mb-4 text-center">{t('magicalHelpers')}</p>
+                                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-[var(--color-surface)] border-b-4 border-r-4 border-[var(--color-ink)] rotate-45" />
+                                <p className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.3em] mb-4 text-center">{t('magicalHelpers')}</p>
                                 <div className="space-y-3">
                                     <button
                                         onClick={() => {
                                             dispatch({ type: 'USE_HINT', payload: { type: 'single_letter' } });
                                             setShowHintMenu(false);
                                         }}
-                                        className="w-full group flex items-center justify-between p-4 bg-[#f8fafc] border-2 border-transparent hover:border-[#0f172a] rounded-2xl transition-all"
+                                        className="w-full group flex items-center justify-between p-4 bg-[var(--color-background)] border-2 border-transparent hover:border-[var(--color-ink)] rounded-2xl transition-all"
                                     >
                                         <div className="text-left">
-                                            <p className="text-sm font-black text-[#0f172a] uppercase leading-none">{t('letterHint')}</p>
-                                            <p className="text-[8px] font-bold text-[#94a3b8] uppercase tracking-widest mt-1">{t('letterHintDesc')}</p>
+                                            <p className="text-sm font-black text-[var(--color-text-primary)] uppercase leading-none">{t('letterHint')}</p>
+                                            <p className="text-[8px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mt-1">{t('letterHintDesc')}</p>
                                         </div>
                                         <div className="flex items-center space-x-1.5 bg-[#fef3c7] group-hover:bg-[#fbbf24] px-3 py-1.5 rounded-xl transition-colors">
                                             <Coins className="w-3.5 h-3.5 text-[#b45309] fill-[#b45309]" />
@@ -176,11 +176,11 @@ const GameScreen: React.FC = () => {
                                             dispatch({ type: 'USE_HINT', payload: { type: 'full_word' } });
                                             setShowHintMenu(false);
                                         }}
-                                        className="w-full group flex items-center justify-between p-4 bg-[#f8fafc] border-2 border-transparent hover:border-[#0f172a] rounded-2xl transition-all"
+                                        className="w-full group flex items-center justify-between p-4 bg-[var(--color-background)] border-2 border-transparent hover:border-[var(--color-ink)] rounded-2xl transition-all"
                                     >
                                         <div className="text-left">
-                                            <p className="text-sm font-black text-[#0f172a] uppercase leading-none">{t('wordHint')}</p>
-                                            <p className="text-[8px] font-bold text-[#94a3b8] uppercase tracking-widest mt-1">{t('wordHintDesc')}</p>
+                                            <p className="text-sm font-black text-[var(--color-text-primary)] uppercase leading-none">{t('wordHint')}</p>
+                                            <p className="text-[8px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mt-1">{t('wordHintDesc')}</p>
                                         </div>
                                         <div className="flex items-center space-x-1.5 bg-[#fef3c7] group-hover:bg-[#fbbf24] px-3 py-1.5 rounded-xl transition-colors">
                                             <Coins className="w-3.5 h-3.5 text-[#b45309] fill-[#b45309]" />
@@ -199,9 +199,9 @@ const GameScreen: React.FC = () => {
                         setBoardRotation(prev => prev + 180);
                         audioSystem.playClick();
                     }}
-                    className="w-16 h-16 bg-white border-2 border-[#0f172a] rounded-2xl flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
+                    className="w-16 h-16 bg-[var(--color-surface)] border-2 border-[var(--color-ink)] rounded-2xl flex items-center justify-center shadow-[6px_6px_0px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
                 >
-                    <RefreshCw className="w-6 h-6 text-[#0f172a]" />
+                    <RefreshCw className="w-6 h-6 text-[var(--color-ink)]" />
                 </motion.button>
             </footer>
 
@@ -218,13 +218,13 @@ const GameScreen: React.FC = () => {
                             animate={{ scale: 1, y: 0, rotate: 0 }}
                             className="bg-white border-4 border-[#0f172a] rounded-[3rem] p-12 w-full max-w-sm text-center shadow-[16px_16px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden"
                         >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#f1f5f9] -translate-y-16 translate-x-16 rounded-full" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#f8fafc] -translate-y-16 translate-x-16 rounded-full opacity-50" />
 
                             <div className="w-20 h-20 bg-[#0f172a] rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl">
                                 <Pause className="w-10 h-10 text-white fill-white" />
                             </div>
 
-                            <h2 className="text-5xl font-black text-[#0f172a] uppercase italic mb-10 tracking-tighter leading-none">{t('gamePaused')}</h2>
+                            <h2 className="text-4xl font-black text-[#0f172a] uppercase italic mb-10 tracking-tighter leading-none whitespace-nowrap">{t('gamePaused')}</h2>
 
                             <div className="space-y-4">
                                 <button
@@ -238,7 +238,7 @@ const GameScreen: React.FC = () => {
                                     onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}
                                     className="w-full bg-white text-[#0f172a] py-4 rounded-[1.5rem] border-2 border-[#0f172a] flex items-center justify-center space-x-2 shadow-[4px_4px_0px_0px_rgba(15,23,42,1)]"
                                 >
-                                    <span className="font-black uppercase text-sm italic tracking-tight underline decoration-slate-300 underline-offset-4">{t('quitToMenu')}</span>
+                                    <span className="font-black uppercase text-sm italic tracking-tight underline decoration-[#cbd5e1] underline-offset-4">{t('quitToMenu')}</span>
                                 </button>
                             </div>
                         </motion.div>
