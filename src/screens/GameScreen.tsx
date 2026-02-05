@@ -20,7 +20,7 @@ const GameScreen: React.FC = () => {
     // Get localized feedback messages
     const feedbackMessages = getFeedbackMessages();
 
-    const handleWordFound = (word: string, cells: { row: number, col: number }[]) => {
+    const handleWordFound = React.useCallback((word: string, cells: { row: number, col: number }[]) => {
         const wordInfo = wordsInfo.find(w => (w.word === word || w.word === [...word].reverse().join('')) && !w.found);
         if (wordInfo) {
             dispatch({ type: 'WORD_FOUND', payload: { word: wordInfo.word, cells } });
@@ -30,7 +30,7 @@ const GameScreen: React.FC = () => {
             });
             setTimeout(() => setFeedback(null), 1500);
         }
-    };
+    }, [wordsInfo, feedbackMessages, dispatch]);
 
     if (!currentLevel) return null;
 

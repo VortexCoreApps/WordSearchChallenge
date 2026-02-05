@@ -125,7 +125,7 @@ const AppContent: React.FC = () => {
 
     return (
         <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select pt-[var(--safe-top)] pb-[var(--safe-bottom)] pl-[var(--safe-left)] pr-[var(--safe-right)]">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
                 <motion.div
                     key={state.view}
                     variants={screenVariants}

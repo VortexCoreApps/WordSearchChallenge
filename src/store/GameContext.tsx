@@ -324,9 +324,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Auto-trigger level completion logic when game view changes to 'complete'
     React.useEffect(() => {
         if (state.view === 'complete' && state.currentLevel && !state.hasProcessedCompletion) {
+            // COMPLETE_LEVEL is now handled more directly in globalDispatch for found words,
+            // but we keep this as a safeguard for other completion paths (like hints).
             globalDispatch({ type: 'COMPLETE_LEVEL' });
         }
-    }, [state.view, state.currentLevel, state.hasProcessedCompletion]);
+    }, [state.view]);
 
     const globalDispatch = (action: GameAction) => {
         if (action.type === 'START_CURRENT_LEVEL' || action.type === 'SET_VIEW' || action.type === 'TOGGLE_PAUSE' || action.type === 'FINISH_TUTORIAL') {
@@ -463,51 +465,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [state.view]);
 
-    useEffect(() => {
-        if (state.showTrophyReveal) {
-            audioSystem.playTrophy();
-        }
-    }, [!!state.showTrophyReveal]);
-
-    useEffect(() => {
-        if (state.view === 'complete' && state.currentLevel) {
-            const currentBlock = state.currentBlock;
-            const currentLevel = state.currentLevel;
-
-            // Clear session since level is complete
-            clearSession();
-
-            setProgress(prev => {
-                const isNew = !prev.completedLevelIds.includes(currentLevel.id);
-                const starCount = calculateStars(state.timeElapsed, currentLevel.difficulty);
-
-                const allLevels = LEVEL_BLOCKS.flatMap(b => b.levels);
-                const currentIndex = allLevels.findIndex(l => l.id === currentLevel.id);
-                const nextLevel = allLevels[currentIndex + 1];
-
-                const unlockedTrophies = [...prev.unlockedTrophyIds];
-                const blockLevels = currentBlock?.levels || [];
-                const isLastOfBlock = blockLevels[blockLevels.length - 1].id === currentLevel.id;
-
-                if (isLastOfBlock && currentBlock && !unlockedTrophies.includes(currentBlock.trophy.id)) {
-                    unlockedTrophies.push(currentBlock.trophy.id);
-                }
-
-                return {
-                    ...prev,
-                    completedLevelIds: isNew ? [...prev.completedLevelIds, currentLevel.id] : prev.completedLevelIds,
-                    totalScore: prev.totalScore + (isNew ? 100 : 20),
-                    coins: prev.coins + (isNew ? currentLevel.rewardCoins : 5),
-                    stars: {
-                        ...prev.stars,
-                        [currentLevel.id]: Math.max(prev.stars[currentLevel.id] || 0, starCount)
-                    },
-                    currentLevelId: nextLevel ? nextLevel.id : prev.currentLevelId,
-                    unlockedTrophyIds: unlockedTrophies
-                };
-            });
-        }
-    }, [state.view]);
+    // This effect was redundant with the logic in globalDispatch COMPLETE_LEVEL.
+    // Removed to prevent double state updates and delays.
 
     useEffect(() => {
         let timer: number;
@@ -517,12 +476,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => clearInterval(timer);
     }, [state.view, state.isPaused]);
 
-    // Auto-save session during active game (every state change)
+    // Auto-save session during active game
+    // Note: timeElapsed is omitted to avoid saving every second (major flickering source)
     useEffect(() => {
         if (state.view === 'game' && state.currentLevel) {
             saveSession(state);
         }
-    }, [state.view, state.wordsInfo, state.foundWordsCells, state.hintedCells, state.timeElapsed]);
+    }, [state.view, state.wordsInfo, state.foundWordsCells, state.hintedCells]);
 
     // Clear session when leaving game without completing
     useEffect(() => {
