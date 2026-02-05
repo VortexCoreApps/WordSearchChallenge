@@ -39,7 +39,7 @@ const LevelSelection: React.FC = () => {
 
     return (
         <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 max-w-lg mx-auto overflow-y-auto">
-            <header className="flex items-center space-x-6 mb-8 mt-2 px-2">
+            <header className="flex items-center space-x-6 mb-8 mt-4 px-2">
                 <button
                     onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}
                     className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"

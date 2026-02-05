@@ -59,25 +59,25 @@ const GameScreen: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            <header className="grid grid-cols-[1fr_2fr_1fr] items-center mb-4 mt-2 px-2">
+            <header className="grid grid-cols-[1fr_2fr_1fr] items-center mb-6 mt-6 px-2">
                 <div className="flex justify-start">
                     <button
                         onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}
-                        className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+                        className="p-3 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
                     >
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="w-6 h-6" />
                     </button>
                 </div>
                 <div className="text-center">
-                    <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.3em] mb-0.5">
+                    <p className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.3em] mb-1">
                         {currentBlock?.name || 'Journey'}
                     </p>
-                    <h3 className="text-base font-black text-[var(--color-text-primary)] uppercase italic leading-tight">
+                    <h3 className="text-xl font-black text-[var(--color-text-primary)] uppercase italic leading-tight">
                         {t('levelLabel')} {currentLevel.id}
                     </h3>
                 </div>
                 <div className="flex justify-end">
-                    <div className="bg-[var(--color-surface)] border-2 border-[var(--color-ink)] px-3 py-1 rounded-xl shadow-[3px_3px_0px_0px_var(--shadow-color)] flex items-center space-x-1.5 scale-75 origin-right">
+                    <div className="bg-[var(--color-surface)] border-2 border-[var(--color-ink)] px-3 py-1.5 rounded-xl shadow-[4px_4px_0px_0px_var(--shadow-color)] flex items-center space-x-1.5 scale-90 origin-right">
                         <Coins className="w-4 h-4 text-[#fbbf24] fill-[#fbbf24]" />
                         <span className="font-black text-[var(--color-text-primary)] text-sm">{progress.coins}</span>
                     </div>

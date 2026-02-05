@@ -81,7 +81,7 @@ const GridCell = React.memo<CellProps>(({
                 transition={{ type: "spring", stiffness: 260, damping: 26 }}
                 className={`relative z-10 transition-all duration-200 ${isActive ? 'text-[var(--color-ink)] scale-125 font-black' :
                     isHinted ? 'text-[var(--color-ink)] font-black' :
-                        'text-[var(--color-text-secondary)]'
+                        'text-[var(--color-ink)]'
                     }`}
             >
                 {letter}

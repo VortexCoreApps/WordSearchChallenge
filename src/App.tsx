@@ -124,7 +124,7 @@ const AppContent: React.FC = () => {
     }, [state.view, progress.hasSeenTutorial, dispatch]);
 
     return (
-        <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select pt-[var(--safe-top)] pb-[var(--safe-bottom)] pl-[var(--safe-left)] pr-[var(--safe-right)]">
+        <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select">
             <AnimatePresence>
                 <motion.div
                     key={state.view}
@@ -133,7 +133,7 @@ const AppContent: React.FC = () => {
                     animate="animate"
                     exit="exit"
                     transition={transition}
-                    className="absolute inset-0 w-full h-full overflow-y-auto hide-scrollbar"
+                    className="absolute inset-0 w-full h-full overflow-y-auto hide-scrollbar pt-[calc(var(--safe-top)+12px)] pb-[var(--safe-bottom)] pl-[var(--safe-left)] pr-[var(--safe-right)]"
                 >
                     {state.view === 'splash' && <SplashScreen />}
                     {state.view === 'menu' && <MenuScreen />}
