@@ -29,20 +29,6 @@ import AchievementToast from '@/components/ui/AchievementToast';
 
 const AppContent: React.FC = () => {
     const { state, progress, dispatch } = useGame();
-    const [showCircleTransition, setShowCircleTransition] = useState(false);
-    const [prevView, setPrevView] = useState(state.view);
-
-    // Detect menu <-> game transitions with useLayoutEffect to prevent flickering
-    useLayoutEffect(() => {
-        if (state.view !== prevView) {
-            if ((prevView === 'menu' && state.view === 'game') ||
-                (prevView === 'game' && state.view === 'menu')) {
-                setShowCircleTransition(true);
-                setTimeout(() => setShowCircleTransition(false), 1200);
-            }
-            setPrevView(state.view);
-        }
-    }, [state.view]);
 
     // 0. Initialize AdMob and PurchaseService ONLY ONCE on mount
     React.useEffect(() => {
@@ -127,7 +113,7 @@ const AppContent: React.FC = () => {
 
     return (
         <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select">
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
                 <motion.div
                     key={state.view}
                     variants={screenVariants}
@@ -145,24 +131,6 @@ const AppContent: React.FC = () => {
                     {state.view === 'onboarding' && <OnboardingScreen />}
                     {state.view === 'levels' && <LevelSelection />}
                 </motion.div>
-            </AnimatePresence>
-
-            {/* Circular Expand Transition */}
-            <AnimatePresence>
-                {showCircleTransition && (
-                    <div className="fixed inset-0 z-[200] pointer-events-none flex items-center justify-center">
-                        <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: [0, 3, 0] }}
-                            transition={{
-                                duration: 1,
-                                times: [0, 0.5, 1],
-                                ease: [0.43, 0.13, 0.23, 0.96]
-                            }}
-                            className="w-[100vmax] h-[100vmax] rounded-full bg-[var(--color-background)]"
-                        />
-                    </div>
-                )}
             </AnimatePresence>
 
             {/* Achievement Notifications */}

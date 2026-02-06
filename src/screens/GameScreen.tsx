@@ -64,7 +64,7 @@ const GameScreen: React.FC = () => {
     const foundCount = wordsInfo.filter(w => w.found).length;
 
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-24 touch-none max-w-lg mx-auto overflow-y-auto hide-scrollbar relative pt-[var(--safe-top)] pb-[calc(var(--safe-bottom)+24px)] pl-[var(--safe-left)] pr-[var(--safe-right)]">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-32 touch-none max-w-lg mx-auto overflow-hidden relative">
             <AnimatePresence>
                 {feedback && (
                     <motion.div
