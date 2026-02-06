@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { GridCell as GridCellType } from '@/types';
 import { getSelectedCells } from '@/utils/gameUtils';
@@ -224,11 +224,11 @@ const WordSearchGrid: React.FC<Props> = ({ grid, onWordFound, foundWordsCells, r
         prevActiveCellsCount.current = activeCells.length;
     }, [activeCells.length]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const preventDefault = (e: TouchEvent) => { if (selection.start) e.preventDefault(); };
         document.addEventListener('touchmove', preventDefault, { passive: false });
         return () => document.removeEventListener('touchmove', preventDefault);
-    }, [selection.start]);
+    }, [!!selection.start]);
 
     return (
         <div className="relative w-full max-w-[min(95vw,480px)] aspect-square mx-auto">

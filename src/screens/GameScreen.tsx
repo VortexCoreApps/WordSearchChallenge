@@ -10,6 +10,33 @@ import { UI_CONFIG } from '@/constants';
 import { audioSystem } from '@/utils/audioSystem';
 import { t, getFeedbackMessages } from '@/utils/i18n';
 
+const TimerDisplay: React.FC<{ time: number }> = React.memo(({ time }) => {
+    return (
+        <div className="text-center">
+            <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1">{t('time')}</p>
+            <div className="flex items-center space-x-2 text-[var(--color-text-primary)] transition-all duration-300">
+                <Clock className="w-3.5 h-3.5" />
+                <span className="text-lg font-black tabular-nums tracking-tighter">
+                    {formatTime(time)}
+                </span>
+            </div>
+        </div>
+    );
+});
+
+const ProgressDisplay: React.FC<{ found: number, total: number }> = React.memo(({ found, total }) => {
+    return (
+        <div className="text-center">
+            <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1">{t('progress')}</p>
+            <div className="flex items-center justify-center space-x-2 text-[var(--color-text-primary)]">
+                <span className="text-lg font-black tabular-nums tracking-tighter">
+                    {found}/{total}
+                </span>
+            </div>
+        </div>
+    );
+});
+
 const GameScreen: React.FC = () => {
     const { state, progress, dispatch } = useGame();
     const [showHintMenu, setShowHintMenu] = useState(false);
@@ -34,13 +61,15 @@ const GameScreen: React.FC = () => {
 
     if (!currentLevel) return null;
 
+    const foundCount = wordsInfo.filter(w => w.found).length;
+
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-24 touch-none max-w-lg mx-auto overflow-hidden relative">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-24 touch-none max-w-lg mx-auto overflow-y-auto hide-scrollbar relative pt-[var(--safe-top)] pb-[calc(var(--safe-bottom)+24px)] pl-[var(--safe-left)] pr-[var(--safe-right)]">
             <AnimatePresence>
                 {feedback && (
                     <motion.div
-                        initial={{ opacity: 0, y: 100, scale: 0.5 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 1.5 }}
                         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] pointer-events-none"
                     >
@@ -85,24 +114,9 @@ const GameScreen: React.FC = () => {
             </header>
 
             <div className="flex items-center justify-center space-x-12 mb-4">
-                <div className="text-center">
-                    <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1">{t('time')}</p>
-                    <div className="flex items-center space-x-2 text-[var(--color-text-primary)]">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span className="text-lg font-black tabular-nums tracking-tighter">
-                            {formatTime(timeElapsed)}
-                        </span>
-                    </div>
-                </div>
+                <TimerDisplay time={timeElapsed} />
                 <div className="w-px h-6 bg-[var(--color-border)]" />
-                <div className="text-center">
-                    <p className="text-[8px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1">{t('progress')}</p>
-                    <div className="flex items-center justify-center space-x-2 text-[var(--color-text-primary)]">
-                        <span className="text-lg font-black tabular-nums tracking-tighter">
-                            {wordsInfo.filter(w => w.found).length}/{wordsInfo.length}
-                        </span>
-                    </div>
-                </div>
+                <ProgressDisplay found={foundCount} total={wordsInfo.length} />
             </div>
 
             <main className="flex-1 min-h-0 flex flex-col items-center justify-center">

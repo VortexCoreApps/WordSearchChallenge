@@ -22,8 +22,8 @@ const TrophyAlbum: React.FC = () => {
     };
 
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 max-w-lg mx-auto overflow-y-auto">
-            <header className="flex flex-col mb-8 mt-2 px-2">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 max-w-lg mx-auto overflow-y-auto hide-scrollbar pt-[var(--safe-top)] pb-[calc(var(--safe-bottom)+24px)] pl-[var(--safe-left)] pr-[var(--safe-right)]">
+            <header className="flex flex-col mb-8 mt-2 px-2 flex-shrink-0">
                 <div className="flex items-center space-x-6 mb-6">
                     <button
                         onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}

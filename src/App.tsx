@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GameProvider, useGame } from './store/GameContext';
 import MenuScreen from '@/screens/MenuScreen';
@@ -14,9 +14,9 @@ import { purchaseService } from '@/services/purchaseService';
 import { App as CapApp } from '@capacitor/app';
 
 const screenVariants = {
-    initial: { opacity: 0, scale: 0.98 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 1.02 },
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
 };
 
 const transition = {
@@ -32,14 +32,16 @@ const AppContent: React.FC = () => {
     const [showCircleTransition, setShowCircleTransition] = useState(false);
     const [prevView, setPrevView] = useState(state.view);
 
-    // Detect menu <-> game transitions
-    useEffect(() => {
-        if ((prevView === 'menu' && state.view === 'game') ||
-            (prevView === 'game' && state.view === 'menu')) {
-            setShowCircleTransition(true);
-            setTimeout(() => setShowCircleTransition(false), 1200);
+    // Detect menu <-> game transitions with useLayoutEffect to prevent flickering
+    useLayoutEffect(() => {
+        if (state.view !== prevView) {
+            if ((prevView === 'menu' && state.view === 'game') ||
+                (prevView === 'game' && state.view === 'menu')) {
+                setShowCircleTransition(true);
+                setTimeout(() => setShowCircleTransition(false), 1200);
+            }
+            setPrevView(state.view);
         }
-        setPrevView(state.view);
     }, [state.view]);
 
     // 0. Initialize AdMob and PurchaseService ONLY ONCE on mount

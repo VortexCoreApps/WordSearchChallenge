@@ -42,7 +42,7 @@ const CompleteScreen: React.FC = () => {
             variants={containerVariants}
             initial="initial"
             animate="animate"
-            className="h-full bg-[var(--color-background)] flex flex-col items-center justify-center p-6 pb-24 text-center max-w-lg mx-auto relative"
+            className="h-full bg-[var(--color-background)] flex flex-col items-center justify-center p-6 sm:p-8 pb-24 text-center max-w-lg mx-auto overflow-y-auto hide-scrollbar relative pt-[var(--safe-top)] pb-[calc(var(--safe-bottom)+24px)] pl-[var(--safe-left)] pr-[var(--safe-right)]"
             style={{ fontFamily: "'Outfit', sans-serif" }}
         >
             <motion.div

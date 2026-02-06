@@ -36,9 +36,9 @@ const MenuScreen: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-full flex flex-col items-center justify-between max-w-lg mx-auto bg-[var(--color-background)] overflow-hidden relative font-sans p-8 pb-24">
+        <div className="h-full flex flex-col items-center justify-between max-w-lg mx-auto bg-[var(--color-background)] overflow-y-auto hide-scrollbar relative font-sans p-6 sm:p-8 pb-24 pt-[var(--safe-top)] pb-[calc(var(--safe-bottom)+24px)] pl-[var(--safe-left)] pr-[var(--safe-right)]">
             {/* Thematic Background: Letter Grid Pattern */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none flex flex-wrap content-start p-4">
+            <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none flex flex-wrap content-start p-4 overflow-hidden">
                 {backgroundLetters.map((letter, i) => (
                     <span key={i} className="w-8 h-8 flex items-center justify-center font-black text-xs text-[var(--color-ink)]">
                         {letter}
@@ -46,7 +46,7 @@ const MenuScreen: React.FC = () => {
                 ))}
             </div>
 
-            <header className="flex flex-col items-center mt-8 mb-8 w-full z-10">
+            <header className="flex flex-col items-center mt-4 sm:mt-8 mb-6 sm:mb-8 w-full z-10 flex-shrink-0">
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}

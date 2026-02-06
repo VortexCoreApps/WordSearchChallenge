@@ -10,7 +10,7 @@ interface Props {
 
 const WordList: React.FC<Props> = ({ words, category }) => {
     return (
-        <div className="w-full max-w-sm mt-3 px-4">
+        <div className="w-full max-w-sm mt-3 px-4" style={{ contain: 'layout style' }}>
             <div className="bg-[var(--color-surface)] border-2 border-[var(--color-ink)] rounded-2xl shadow-[6px_6px_0px_0px_var(--shadow-color)] overflow-hidden relative">
                 {category && (
                     <div className="bg-[#14b8a6] border-b-2 border-[var(--color-ink)] py-1.5 px-6">
@@ -57,4 +57,4 @@ const WordList: React.FC<Props> = ({ words, category }) => {
     );
 };
 
-export default WordList;
+export default React.memo(WordList);
