@@ -63,6 +63,10 @@ export interface UserProgress {
         coinsEarned: number;
         lastPlayDate: string | null;
     };
+    settings: {
+        soundEnabled: boolean;
+        hapticsEnabled: boolean;
+    };
 }
 
 export interface GameState {
@@ -97,4 +101,7 @@ export type GameAction =
     | { type: 'FINISH_TUTORIAL' }
     | { type: 'PAUSE_GAME' }
     | { type: 'RESUME_GAME' }
+    | { type: 'TOGGLE_SOUND' }
+    | { type: 'TOGGLE_VIBRATION' }
+    | { type: 'SET_LANGUAGE'; payload: 'en' | 'es' }
     | { type: 'RESET_PROGRESS' };

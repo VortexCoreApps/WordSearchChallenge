@@ -1,6 +1,7 @@
 
 class AudioSystem {
     private ctx: AudioContext | null = null;
+    private isEnabled: boolean = true;
 
     private init() {
         if (!this.ctx) {
@@ -11,8 +12,12 @@ class AudioSystem {
         }
     }
 
+    setEnabled(enabled: boolean) {
+        this.isEnabled = enabled;
+    }
+
     private createOscillator(freq: number, type: OscillatorType = 'sine', startTime: number, duration: number, volume: number = 0.2) {
-        if (!this.ctx) return;
+        if (!this.ctx || !this.isEnabled) return;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
@@ -31,6 +36,7 @@ class AudioSystem {
     }
 
     playClick() {
+        if (!this.isEnabled) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -38,6 +44,7 @@ class AudioSystem {
     }
 
     playWordFound() {
+        if (!this.isEnabled) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -47,6 +54,7 @@ class AudioSystem {
     }
 
     playLevelComplete() {
+        if (!this.isEnabled) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -57,6 +65,7 @@ class AudioSystem {
     }
 
     playTrophy() {
+        if (!this.isEnabled) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;
@@ -67,6 +76,7 @@ class AudioSystem {
     }
 
     playHint() {
+        if (!this.isEnabled) return;
         this.init();
         if (!this.ctx) return;
         const now = this.ctx.currentTime;

@@ -9,6 +9,7 @@ import SplashScreen from '@/screens/SplashScreen';
 import OnboardingScreen from '@/screens/OnboardingScreen';
 import TrophyAlbum from '@/screens/TrophyAlbum';
 import LevelSelection from '@/screens/LevelSelection';
+import SettingsScreen from '@/screens/SettingsScreen';
 import { adMobService } from '@/services/adMobService';
 import { purchaseService } from '@/services/purchaseService';
 import { App as CapApp } from '@capacitor/app';
@@ -129,6 +130,7 @@ const AppContent: React.FC = () => {
                     {state.view === 'complete' && <CompleteScreen />}
                     {state.view === 'album' && <TrophyAlbum />}
                     {state.view === 'onboarding' && <OnboardingScreen />}
+                    {state.view === 'settings' && <SettingsScreen />}
                     {state.view === 'levels' && <LevelSelection />}
                 </motion.div>
             </AnimatePresence>

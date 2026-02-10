@@ -48,10 +48,10 @@ const LevelSelection: React.FC = () => {
                 </button>
                 <div>
                     <h2 className="text-2xl font-black text-[var(--color-text-primary)] uppercase italic tracking-tighter leading-none">
-                        {t('appSubtitle') === 'CHALLENGE' ? 'Worlds' : 'Mundos'}
+                        {t('worlds')}
                     </h2>
                     <p className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.3em] mt-2">
-                        {progress.completedLevelIds.length} Levels Found
+                        {progress.completedLevelIds.length} {t('levelsFound')}
                     </p>
                 </div>
             </header>
@@ -93,14 +93,14 @@ const LevelSelection: React.FC = () => {
                                         </h3>
                                         {!unlocked && (
                                             <span className="text-[8px] font-black uppercase text-[var(--color-text-muted)] border border-[var(--color-border)] px-1.5 py-0.5 rounded">
-                                                Locked
+                                                {t('locked')}
                                             </span>
                                         )}
                                     </div>
 
                                     <div className="flex items-center space-x-3">
                                         <span className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest">
-                                            Levels {idx * 50 + 1}-{Math.min((idx + 1) * 50, 1000)}
+                                            {t('levels')} {idx * 50 + 1}-{Math.min((idx + 1) * 50, 1000)}
                                         </span>
                                         <div className="flex items-center text-amber-500">
                                             <Star className="w-3 h-3 fill-amber-500 mr-1" />

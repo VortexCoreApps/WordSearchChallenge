@@ -3,6 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Pencil, Loader2 } from 'lucide-react';
 
+import { t } from '@/utils/i18n';
+
 const SplashScreen: React.FC = () => {
     return (
         <div className="h-full bg-[var(--color-background)] flex flex-col items-center justify-center p-6 text-center">
@@ -19,8 +21,8 @@ const SplashScreen: React.FC = () => {
                 </div>
 
                 <h1 className="text-5xl font-black text-[var(--color-text-primary)] italic tracking-tighter uppercase leading-none" style={{ fontFamily: "'Outfit', sans-serif" }}>
-                    WORD SEARCH<br />
-                    <span className="text-[var(--color-text-primary)]">CHALLENGE</span>
+                    {t('appTitle')}<br />
+                    <span className="text-[var(--color-text-primary)]">{t('appSubtitle')}</span>
                 </h1>
                 <div className="h-1.5 w-24 bg-[#fbbf24] mt-6 mx-auto rounded-full" />
             </motion.div>
@@ -39,7 +41,7 @@ const SplashScreen: React.FC = () => {
                     <Loader2 className="w-8 h-8 text-[var(--color-text-muted)]" />
                 </motion.div>
                 <p className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.6em] animate-pulse">
-                    Loading Puzzle Engine...
+                    {t('loading')}
                 </p>
             </motion.div>
         </div>

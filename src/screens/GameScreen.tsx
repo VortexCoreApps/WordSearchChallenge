@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, RefreshCw, Clock, Pause, Lightbulb, Coins, Play } from 'lucide-react';
+import { ArrowLeft, RefreshCw, Clock, Pause, Lightbulb, Coins, Play, Volume2, VolumeX, Smartphone, SmartphoneNfc } from 'lucide-react';
 import { useGame } from '@/store/GameContext';
 import WordSearchGrid from '@/components/game/WordSearchGrid';
 import WordList from '@/components/game/WordList';
@@ -64,7 +64,7 @@ const GameScreen: React.FC = () => {
     const foundCount = wordsInfo.filter(w => w.found).length;
 
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-32 touch-none max-w-lg mx-auto overflow-hidden relative">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-20 touch-none max-w-lg mx-auto overflow-hidden relative">
             <AnimatePresence>
                 {feedback && (
                     <motion.div
@@ -119,7 +119,7 @@ const GameScreen: React.FC = () => {
                 <ProgressDisplay found={foundCount} total={wordsInfo.length} />
             </div>
 
-            <main className="flex-1 min-h-0 flex flex-col items-center justify-center">
+            <main className="flex-1 min-h-0 flex flex-col items-center justify-center gap-y-2 sm:gap-y-4">
                 <motion.div
                     animate={{ rotate: boardRotation }}
                     transition={{ type: "spring", stiffness: 260, damping: 26 }}
@@ -132,7 +132,9 @@ const GameScreen: React.FC = () => {
                         rotation={boardRotation}
                     />
                 </motion.div>
-                <WordList words={wordsInfo} category={currentLevel.title} />
+                <div className="w-full flex flex-col items-center mb-4 sm:mb-8">
+                    <WordList words={wordsInfo} category={currentLevel.title} />
+                </div>
             </main>
 
             <footer className="mt-auto py-4 flex items-center justify-center space-x-6 relative">
@@ -238,7 +240,22 @@ const GameScreen: React.FC = () => {
                                 <Pause className="w-10 h-10 text-white fill-white" />
                             </div>
 
-                            <h2 className="text-4xl font-black text-[#0f172a] uppercase italic mb-10 tracking-tighter leading-none whitespace-nowrap">{t('gamePaused')}</h2>
+                            <h2 className="text-2xl font-black text-[#0f172a] uppercase italic mb-6 tracking-tighter leading-none whitespace-nowrap">{t('gamePaused')}</h2>
+
+                            <div className="flex justify-center space-x-4 mb-8">
+                                <button
+                                    onClick={() => dispatch({ type: 'TOGGLE_SOUND' })}
+                                    className={`p-4 border-2 border-[#0f172a] rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all ${progress.settings.soundEnabled ? 'bg-[#fbbf24]' : 'bg-gray-100 opacity-60'}`}
+                                >
+                                    {progress.settings.soundEnabled ? <Volume2 className="w-6 h-6 text-[#0f172a]" /> : <VolumeX className="w-6 h-6 text-[#0f172a]" />}
+                                </button>
+                                <button
+                                    onClick={() => dispatch({ type: 'TOGGLE_VIBRATION' })}
+                                    className={`p-4 border-2 border-[#0f172a] rounded-2xl shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] transition-all ${progress.settings.hapticsEnabled ? 'bg-[#14b8a6]' : 'bg-gray-100 opacity-60'}`}
+                                >
+                                    {progress.settings.hapticsEnabled ? <SmartphoneNfc className="w-6 h-6 text-[#0f172a]" /> : <Smartphone className="w-6 h-6 text-[#0f172a]" />}
+                                </button>
+                            </div>
 
                             <div className="space-y-4">
                                 <button

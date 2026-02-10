@@ -4,6 +4,7 @@ import { GameState, GameAction, UserProgress, WordInfo, Difficulty } from '../ty
 import { LEVEL_BLOCKS, COLORS, UI_CONFIG } from '../constants';
 import { generateGrid, seededShuffle } from '../utils/gameUtils';
 import { audioSystem } from '../utils/audioSystem';
+import { setLanguage } from '../utils/i18n';
 import { hapticService } from '../services/hapticService';
 import { saveSession, loadSession, clearSession } from '../utils/sessionPersistence';
 import { updateStatsOnLevelComplete, updateStreak, checkAchievements, DEFAULT_STATS, Achievement } from '../utils/achievements';
@@ -305,7 +306,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             stars: {},
             coins: 200,
             currentLevelId: 1,
-            stats: { ...DEFAULT_STATS, lastPlayDate: null }
+            stats: { ...DEFAULT_STATS, lastPlayDate: null },
+            settings: {
+                soundEnabled: true,
+                hapticsEnabled: true
+            }
         };
 
         if (saved) {
@@ -319,6 +324,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         localStorage.setItem('ws_challenge_pro_progress', JSON.stringify(progress));
+        // Sync services with current settings
+        audioSystem.setEnabled(progress.settings.soundEnabled);
+        hapticService.setEnabled(progress.settings.hapticsEnabled);
     }, [progress]);
 
     // Auto-trigger level completion logic when game view changes to 'complete'
@@ -437,6 +445,34 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             dispatch(action);
             clearSession();
+            return;
+        }
+
+        if (action.type === 'TOGGLE_SOUND') {
+            setProgress(prev => ({
+                ...prev,
+                settings: { ...prev.settings, soundEnabled: !prev.settings.soundEnabled }
+            }));
+            return;
+        }
+
+        if (action.type === 'TOGGLE_VIBRATION') {
+            setProgress(prev => ({
+                ...prev,
+                settings: { ...prev.settings, hapticsEnabled: !prev.settings.hapticsEnabled }
+            }));
+            return;
+        }
+
+        if (action.type === 'SET_LANGUAGE') {
+            setLanguage(action.payload);
+            window.location.reload();
+            return;
+        }
+
+        if (action.type === 'RESET_PROGRESS') {
+            localStorage.removeItem('ws_challenge_pro_progress');
+            window.location.reload(); // Hard reset is safest for all state
             return;
         }
 

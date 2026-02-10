@@ -88,7 +88,7 @@ const TrophyAlbum: React.FC = () => {
                                     </div>
                                     <div className="flex-1 text-left relative z-10">
                                         <h3 className="text-lg font-black text-[var(--color-text-primary)] uppercase tracking-tight leading-none mb-1">
-                                            {isUnlocked ? block.trophy.name : 'Unknown Trophy'}
+                                            {isUnlocked ? block.trophy.name : t('unknownTrophy')}
                                         </h3>
                                         <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-widest mb-3">
                                             {isUnlocked ? block.trophy.description : t('lockedTrophy')}
@@ -97,7 +97,7 @@ const TrophyAlbum: React.FC = () => {
                                         {isUnlocked && (
                                             <div className="flex items-center space-x-1">
                                                 <Sparkles className="w-3 h-3 text-[#fbbf24] fill-[#fbbf24]" />
-                                                <span className="text-[9px] font-black uppercase text-[var(--color-text-muted)] tracking-tighter">Elite Achievement</span>
+                                                <span className="text-[9px] font-black uppercase text-[var(--color-text-muted)] tracking-tighter">{t('eliteAchievement')}</span>
                                             </div>
                                         )}
                                     </div>
@@ -150,7 +150,9 @@ const TrophyAlbum: React.FC = () => {
             {(activeTab === 'trophies' ? progress.unlockedTrophyIds : progress.unlockedAchievementIds).length === 0 && (
                 <div className="flex-1 flex flex-col items-center justify-center py-20 opacity-30 select-none">
                     <Trophy className="w-20 h-20 text-[var(--color-ink)]" />
-                    <p className="text-xs font-black uppercase tracking-widest text-[var(--color-text-muted)]">No {activeTab} yet</p>
+                    <p className="text-xs font-black uppercase tracking-widest text-[var(--color-text-muted)]">
+                        {activeTab === 'trophies' ? t('noTrophiesYet') : t('noAchievementsYet')}
+                    </p>
                 </div>
             )}
         </div>

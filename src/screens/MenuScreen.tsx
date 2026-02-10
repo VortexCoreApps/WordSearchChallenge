@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Trophy, Coins, Star, X, Video } from 'lucide-react';
+import { Play, Trophy, Coins, Star, X, Video, Settings } from 'lucide-react';
 import { useGame } from '@/store/GameContext';
 import { adMobService } from '@/services/adMobService';
 import { t, getLanguage } from '@/utils/i18n';
@@ -56,6 +56,17 @@ const MenuScreen: React.FC = () => {
                         <span className="text-4xl font-black text-[var(--color-ink)] italic">W</span>
                     </div>
                 </motion.div>
+
+                {/* Floating Settings Button in Header Area */}
+                <div className="absolute top-8 right-8 z-20">
+                    <motion.button
+                        whileTap={{ scale: 0.9, rotate: 90 }}
+                        onClick={() => dispatch({ type: 'SET_VIEW', payload: 'settings' })}
+                        className="p-3 bg-[var(--color-surface)] border-2 border-[var(--color-ink)] rounded-2xl shadow-[4px_4px_0px_0px_var(--shadow-color)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[3px_3px_0px_0px_var(--shadow-color)] transition-all"
+                    >
+                        <Settings className="w-6 h-6 text-[var(--color-ink)]" />
+                    </motion.button>
+                </div>
                 <div className="relative inline-block px-4">
                     <motion.div
                         initial={{ width: 0 }}
@@ -139,7 +150,7 @@ const MenuScreen: React.FC = () => {
                         <div className="w-14 h-14 bg-[var(--color-surface)] border-3 border-[var(--color-ink)] rounded-2xl flex items-center justify-center mb-2 shadow-[4px_4px_0px_0px_var(--shadow-color)] group-hover:translate-x-1 group-hover:translate-y-1 group-hover:shadow-none transition-all">
                             <Star className="w-6 h-6 text-[var(--color-ink)] fill-[#34d399]" />
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">{t('appSubtitle') === 'CHALLENGE' ? 'Levels' : 'Niveles'}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--color-text-secondary)]">{t('levels')}</span>
                     </motion.button>
 
                     <motion.button

@@ -8,7 +8,7 @@
 import { Level, LevelBlock, Trophy } from '../types';
 import { getWordBank, getCategories, getCategoryName, SupportedLanguage } from '../data/wordBank';
 import { seededShuffle } from './gameUtils';
-import { getLanguage } from './i18n';
+import { getLanguage, t } from './i18n';
 
 // World names for each language
 const WORLD_NAMES: Record<SupportedLanguage, string[]> = {
@@ -124,7 +124,7 @@ export function getBlockMetadata(blockIndex: number, lang?: SupportedLanguage): 
         name: worldName,
         trophy: {
             id: `trophy_${blockId}`,
-            name: `${worldName} Master`,
+            name: `${worldName} ${t('master', language)}`,
             icon: 'Trophy',
             description: trophyDescriptions[language] || trophyDescriptions.en,
             unlockedAtBlockId: blockId

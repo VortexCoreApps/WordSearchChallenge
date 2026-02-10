@@ -37,6 +37,7 @@ export interface Translations {
     removeAdsDesc: string;
     restorePurchases: string;
     purchased: string;
+    levels: string;
 
     // Game
     time: string;
@@ -105,6 +106,24 @@ export interface Translations {
     get_started: string;
     get_ready: string;
     get_ready_desc: string;
+    settings: string;
+    preferences: string;
+    sound: string;
+    vibration: string;
+    dangerZone: string;
+    resetProgress: string;
+    confirmReset: string;
+    language: string;
+    english: string;
+    spanish: string;
+    worlds: string;
+    levelsFound: string;
+    locked: string;
+    unknownTrophy: string;
+    eliteAchievement: string;
+    noTrophiesYet: string;
+    noAchievementsYet: string;
+    master: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -135,6 +154,7 @@ const translations: Record<Language, Translations> = {
         removeAdsDesc: 'Remove all ads forever!',
         restorePurchases: 'Restore',
         purchased: 'Purchased',
+        levels: 'Levels',
 
         // Game
         time: 'Time',
@@ -203,6 +223,24 @@ const translations: Record<Language, Translations> = {
         get_started: "Let's Play!",
         get_ready: 'Ready to Play?',
         get_ready_desc: 'Everything is set! Start your journey and become the ultimate Word Master.',
+        settings: 'Settings',
+        preferences: 'Preferences',
+        sound: 'Sound Effects',
+        vibration: 'Haptic Feedback',
+        dangerZone: 'Danger Zone',
+        resetProgress: 'Reset Progress',
+        confirmReset: 'Are you sure you want to reset all progress? This cannot be undone.',
+        language: 'Language',
+        english: 'English',
+        spanish: 'Spanish',
+        worlds: 'Worlds',
+        levelsFound: 'Levels Found',
+        locked: 'Locked',
+        unknownTrophy: 'Unknown Trophy',
+        eliteAchievement: 'Elite Achievement',
+        noTrophiesYet: 'No trophies yet',
+        noAchievementsYet: 'No achievements yet',
+        master: 'Master',
     },
 
     es: {
@@ -232,6 +270,7 @@ const translations: Record<Language, Translations> = {
         removeAdsDesc: '¡Quita anuncios para siempre!',
         restorePurchases: 'Restaurar',
         purchased: 'Comprado',
+        levels: 'Niveles',
 
         // Game
         time: 'Tiempo',
@@ -300,6 +339,24 @@ const translations: Record<Language, Translations> = {
         get_started: '¡A Jugar!',
         get_ready: '¿Todo listo?',
         get_ready_desc: '¡Ya conoces lo básico! Empieza tu viaje y conviértete en el Maestro de las Palabras definitivo.',
+        settings: 'Ajustes',
+        preferences: 'Preferencias',
+        sound: 'Efectos de Sonido',
+        vibration: 'Vibración Háctica',
+        dangerZone: 'Zona Peligrosa',
+        resetProgress: 'Reiniciar Progreso',
+        confirmReset: '¿Estás seguro de que quieres reiniciar todo el progreso? Esto no se puede deshacer.',
+        language: 'Idioma',
+        english: 'Inglés',
+        spanish: 'Español',
+        worlds: 'Mundos',
+        levelsFound: 'Niveles Encontrados',
+        locked: 'Bloqueado',
+        unknownTrophy: 'Trofeo Oculto',
+        eliteAchievement: 'Logro de Élite',
+        noTrophiesYet: 'Sin trofeos aún',
+        noAchievementsYet: 'Sin logros aún',
+        master: 'Maestro',
     },
 };
 
