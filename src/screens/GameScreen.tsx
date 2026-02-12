@@ -76,22 +76,22 @@ const GameScreen: React.FC = () => {
             <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
                 {/* Top-right glow */}
                 <div
-                    className="absolute w-80 h-80 rounded-full blur-3xl"
-                    style={{ background: worldTheme.accent, top: '-8%', right: '-10%', opacity: 0.18 }}
+                    className="absolute w-80 h-80 rounded-full blur-2xl"
+                    style={{ background: worldTheme.accent, top: '-8%', right: '-10%', opacity: 0.15 }}
                 />
                 {/* Bottom-left glow */}
                 <div
-                    className="absolute w-72 h-72 rounded-full blur-3xl"
-                    style={{ background: worldTheme.glow, bottom: '0%', left: '-15%', opacity: 0.15 }}
+                    className="absolute w-72 h-72 rounded-full blur-2xl"
+                    style={{ background: worldTheme.glow, bottom: '0%', left: '-15%', opacity: 0.12 }}
                 />
                 {/* Center subtle wash */}
                 <div
-                    className="absolute rounded-full blur-3xl"
+                    className="absolute rounded-full blur-2xl"
                     style={{
-                        background: `radial-gradient(circle, ${worldTheme.accent}22 0%, transparent 70%)`,
+                        background: `radial-gradient(circle, ${worldTheme.accent}15 0%, transparent 70%)`,
                         width: '120%', height: '60%',
                         top: '25%', left: '-10%',
-                        opacity: 0.5
+                        opacity: 0.4
                     }}
                 />
             </div>
@@ -257,11 +257,9 @@ const GameScreen: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 bg-[#0f172a]/80 backdrop-blur-sm flex items-center justify-center p-6"
+                        className="fixed inset-0 z-50 bg-[#0f172a]/90 flex items-center justify-center p-6"
                     >
                         <motion.div
-                            initial={{ scale: 0.8, y: 50, rotate: -2 }}
-                            animate={{ scale: 1, y: 0, rotate: 0 }}
                             className="bg-white border-4 border-[#0f172a] rounded-[3rem] p-12 w-full max-w-sm text-center shadow-[16px_16px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden"
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-[#f8fafc] -translate-y-16 translate-x-16 rounded-full opacity-50" />

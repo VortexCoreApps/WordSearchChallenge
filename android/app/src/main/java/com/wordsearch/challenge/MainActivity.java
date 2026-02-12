@@ -3,6 +3,7 @@ package com.wordsearch.challenge;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.webkit.WebView;
 
 import androidx.core.view.WindowCompat;
@@ -19,41 +20,60 @@ public class MainActivity extends BridgeActivity {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
-        // Fix: Android WebView blank screen after app is backgrounded.
-        // When the system destroys the Activity's rendering surface to reclaim memory,
-        // the WebView may fail to re-render on resume. Force a layout pass and
-        // inject a no-op style change to trigger a full repaint.
+        // If we regained focus, and it's not the first launch, force a redraw.
+        // This is specifically to fix the "blank screen" bug in Android WebViews
+        // when returning from background or closing an ad/system dialog.
+        if (hasFocus) {
+            triggerWebViewRepaint();
+        }
+    }
+
+    private void triggerWebViewRepaint() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             try {
                 WebView webView = getBridge().getWebView();
                 if (webView != null) {
-                    // Force the native view hierarchy to re-layout
+                    // Pass 1: Force layout and invalidate
                     webView.requestLayout();
+                    webView.invalidate();
 
-                    // Force a visibility toggle to ensure the GL surface is recreated
-                    webView.setVisibility(android.view.View.INVISIBLE);
+                    // Pass 2: Toggle visibility with a small delay
+                    // This often forces the native GL surface to reattach
+                    webView.setVisibility(View.INVISIBLE);
                     webView.postDelayed(() -> {
-                        webView.setVisibility(android.view.View.VISIBLE);
+                        webView.setVisibility(View.VISIBLE);
+                        webView.requestLayout(); // second pass
 
-                        // Inject a DOM-level repaint trigger as a safeguard
+                        // Pass 3: Force a DOM reflow via JavaScript
+                        // We also scroll 1px and back to trigger browser-level composite pass
                         webView.evaluateJavascript(
                                 "(function(){" +
                                         "  var b = document.body;" +
                                         "  if(b) {" +
+                                        "    var oldPos = window.scrollY;" +
                                         "    b.style.display = 'none';" +
                                         "    void b.offsetHeight;" + // force reflow
                                         "    b.style.display = '';" +
+                                        "    window.scrollTo(0, oldPos + 1);" +
+                                        "    window.scrollTo(0, oldPos);" +
                                         "  }" +
                                         "})()",
                                 null);
-                    }, 100);
+                    }, 50);
                 }
             } catch (Exception e) {
-                // Silently ignore — Bridge might not be ready yet on first launch
+                // Silently ignore
             }
-        }, 200);
+        }, 300); // 300ms delay to allow the OS to finish the window transition
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Fallback or additional pass on resume
+        triggerWebViewRepaint();
     }
 }
