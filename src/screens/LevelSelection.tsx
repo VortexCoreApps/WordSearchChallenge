@@ -3,22 +3,21 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, ArrowLeft, Lock, Star, ChevronRight } from 'lucide-react';
 import { useGame } from '@/store/GameContext';
-import { LEVEL_BLOCKS } from '@/constants';
+import { LEVEL_BLOCKS, getBlockList, getBlock } from '@/constants';
 import { t } from '@/utils/i18n';
 
 const LevelSelection: React.FC = () => {
     const { progress, dispatch } = useGame();
 
-    const getBlockProgress = (blockId: string) => {
-        const blockIndex = parseInt(blockId.split('_')[1]) - 1;
-        const block = LEVEL_BLOCKS[blockIndex];
-        const completedInBlock = block.levels.filter(l => progress.completedLevelIds.includes(l.id)).length;
-        const totalInBlock = block.levels.length;
+    const getBlockProgress = (blockId: string, levelRange: [number, number]) => {
+        const [start, end] = levelRange;
+        const completedInBlock = progress.completedLevelIds.filter(id => id >= start && id <= end).length;
+        const totalInBlock = (end - start) + 1;
 
         let totalStars = 0;
-        block.levels.forEach(l => {
-            totalStars += (progress.stars[l.id] || 0);
-        });
+        for (let id = start; id <= end; id++) {
+            totalStars += (progress.stars[id] || 0);
+        }
 
         return {
             completedCount: completedInBlock,
@@ -31,10 +30,12 @@ const LevelSelection: React.FC = () => {
     const isBlockUnlocked = (index: number) => {
         if (index === 0) return true;
 
-        // Block is unlocked if the previous block is completed
-        const prevBlock = LEVEL_BLOCKS[index - 1];
-        const lastLevelOfPrevBlock = prevBlock.levels[prevBlock.levels.length - 1].id;
-        return progress.completedLevelIds.includes(lastLevelOfPrevBlock);
+        // Block is unlocked if the previous block is completed (50 levels)
+        const prevBlockEnd = index * 50;
+        const prevBlockStart = (index - 1) * 50 + 1;
+
+        // Check if the last level of the previous block is completed
+        return progress.completedLevelIds.includes(prevBlockEnd);
     };
 
     return (
@@ -57,9 +58,9 @@ const LevelSelection: React.FC = () => {
             </header>
 
             <div className="flex flex-col gap-6">
-                {LEVEL_BLOCKS.map((block, idx) => {
+                {getBlockList().map((block, idx) => {
                     const unlocked = isBlockUnlocked(idx);
-                    const stats = getBlockProgress(block.id);
+                    const stats = getBlockProgress(block.id, block.levelRange);
                     const isCompleted = stats.completedCount === stats.totalCount;
                     const hasTrophy = progress.unlockedTrophyIds.includes(block.trophy.id);
 
@@ -72,8 +73,9 @@ const LevelSelection: React.FC = () => {
                             disabled={!unlocked}
                             onClick={() => {
                                 // For now, we can only start the "current" level or first uncompleted level in block
-                                const nextInBlock = block.levels.find(l => !progress.completedLevelIds.includes(l.id)) || block.levels[0];
-                                dispatch({ type: 'START_LEVEL', payload: { level: nextInBlock, block: block } });
+                                const fullBlock = getBlock(idx);
+                                const nextInBlock = fullBlock.levels.find(l => !progress.completedLevelIds.includes(l.id)) || fullBlock.levels[0];
+                                dispatch({ type: 'START_LEVEL', payload: { level: nextInBlock, block: fullBlock } });
                             }}
                             className={`puzzle-card p-5 text-left transition-all ${!unlocked ? 'opacity-60 grayscale shadow-none' : 'hover:translate-x-1 hover:translate-y-1 hover:shadow-none'}`}
                         >

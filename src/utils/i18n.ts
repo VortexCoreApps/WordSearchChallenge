@@ -38,6 +38,11 @@ export interface Translations {
     restorePurchases: string;
     purchased: string;
     levels: string;
+    premiumBenefitsTitle: string;
+    benefit1: string;
+    benefit2: string;
+    benefit3: string;
+    buyNow: string;
 
     // Game
     time: string;
@@ -81,6 +86,8 @@ export interface Translations {
     adLoadingError: string;
     noConnectionAd: string;
     rewardReceived: string;
+    adNotice: string;
+    adNoticeDesc: string;
 
     // Categories
     nature: string;
@@ -155,6 +162,11 @@ const translations: Record<Language, Translations> = {
         restorePurchases: 'Restore',
         purchased: 'Purchased',
         levels: 'Levels',
+        premiumBenefitsTitle: 'Premium Experience',
+        benefit1: 'No more ads',
+        benefit2: 'Enjoy without interruptions',
+        benefit3: 'Support the developer',
+        buyNow: 'Unlock Now',
 
         // Game
         time: 'Time',
@@ -198,6 +210,8 @@ const translations: Record<Language, Translations> = {
         adLoadingError: 'Could not load ad. Try again later.',
         noConnectionAd: 'No internet connection. Ads unavailable.',
         rewardReceived: '+100 COINS!',
+        adNotice: 'Ad Incoming',
+        adNoticeDesc: 'Support us by watching a short ad!',
 
         // Categories
         nature: 'Nature',
@@ -271,6 +285,11 @@ const translations: Record<Language, Translations> = {
         restorePurchases: 'Restaurar',
         purchased: 'Comprado',
         levels: 'Niveles',
+        premiumBenefitsTitle: 'Experiencia Premium',
+        benefit1: 'Adiós a los anuncios',
+        benefit2: 'Disfruta sin interrupciones',
+        benefit3: 'Apoya al desarrollador',
+        buyNow: 'Desbloquear Ahora',
 
         // Game
         time: 'Tiempo',
@@ -314,6 +333,8 @@ const translations: Record<Language, Translations> = {
         adLoadingError: 'No se pudo cargar el anuncio. Intenta más tarde.',
         noConnectionAd: 'Sin conexión a internet. Anuncios no disponibles.',
         rewardReceived: '¡+100 MONEDAS!',
+        adNotice: 'Anuncio Próximamente',
+        adNoticeDesc: '¡Ayúdanos viendo un breve anuncio!',
 
         // Categories
         nature: 'Naturaleza',

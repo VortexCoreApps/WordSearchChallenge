@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, ArrowLeft, Lock, Sparkles, Award, Star, Search, Target, Crown, Play, Shield, Gem, Zap, Timer, Flame, Calendar, CalendarCheck, Coins, Wallet } from 'lucide-react';
 import { useGame } from '@/store/GameContext';
-import { LEVEL_BLOCKS } from '@/constants';
+import { LEVEL_BLOCKS, getBlockList } from '@/constants';
 import { t } from '@/utils/i18n';
 import { ACHIEVEMENTS } from '@/utils/achievements';
 import * as Icons from 'lucide-react';
@@ -65,7 +65,7 @@ const TrophyAlbum: React.FC = () => {
                         exit={{ opacity: 0, x: 20 }}
                         className="grid grid-cols-1 gap-6 pb-20"
                     >
-                        {LEVEL_BLOCKS.map((block, idx) => {
+                        {getBlockList().map((block, idx) => {
                             const isUnlocked = progress.unlockedTrophyIds.includes(block.trophy.id);
 
                             return (

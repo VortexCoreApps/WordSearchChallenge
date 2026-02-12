@@ -6,15 +6,16 @@ import {
     BannerAdPosition,
     AdOptions,
     RewardAdOptions,
-    RewardAdPluginEvents
+    RewardAdPluginEvents,
+    InterstitialAdPluginEvents
 } from '@capacitor-community/admob';
 import { purchaseService } from './purchaseService';
 
 // Test IDs from official AdMob documentation
 export const AD_UNITS = {
-    BANNER: 'ca-app-pub-3940256099942544/6300978111',
-    INTERSTITIAL: 'ca-app-pub-3940256099942544/1033173712',
-    REWARDED: 'ca-app-pub-3940256099942544/5224354917'
+    BANNER: 'ca-app-pub-1243237395728504/3700203018',
+    INTERSTITIAL: 'ca-app-pub-1243237395728504/5064323361',
+    REWARDED: 'ca-app-pub-1243237395728504/5623658774'
 };
 
 export type AdErrorType = 'no_connection' | 'load_failed' | 'not_initialized' | 'unknown';
@@ -30,23 +31,125 @@ class AdMobService {
     private lastConnectionCheck = 0;
     private isOnline = true;
 
+    // Preload flags to avoid duplicate requests
+    private isInterstitialLoading = false;
+    private isInterstitialPrepared = false;
+    private isRewardedLoading = false;
+    private isRewardedPrepared = false;
+
     async initialize() {
         if (this.isInitialized) return;
 
         try {
             await AdMob.initialize({
-                initializeForTesting: true,
+                initializeForTesting: false,
+                // Registrado vía Consola de AdMob (Test Devices)
             });
+
             this.isInitialized = true;
             console.log('AdMob Initialized');
 
             // Set up online/offline listeners
             this.setupConnectionListeners();
 
+            // Set up global listeners for preloading
+            this.setupAdListeners();
+
             // Show banner immediately on start
             await this.showBanner();
+
+            // Preload ads for the first time
+            this.preloadInterstitial();
+            this.preloadRewarded();
+
         } catch (e) {
             console.warn('AdMob Initialization failed (probably not on mobile)', e);
+        }
+    }
+
+    private setupAdListeners() {
+        // Interstitial listeners
+        AdMob.addListener(InterstitialAdPluginEvents.Dismissed, () => {
+            console.log('Interstitial dismissed, preloading next one');
+            this.isInterstitialPrepared = false;
+            this.preloadInterstitial();
+        });
+
+        AdMob.addListener(InterstitialAdPluginEvents.FailedToLoad, (error) => {
+            console.warn('Interstitial failed to load, will retry later', error);
+            this.isInterstitialLoading = false;
+            this.isInterstitialPrepared = false;
+            // Retry after a delay (e.g., 30s) to avoid spamming AdMob
+            setTimeout(() => this.preloadInterstitial(), 30000);
+        });
+
+        AdMob.addListener(InterstitialAdPluginEvents.Loaded, () => {
+            console.log('Interstitial preloaded and ready');
+            this.isInterstitialLoading = false;
+            this.isInterstitialPrepared = true;
+        });
+
+        // Rewarded listeners
+        AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
+            console.log('Rewarded Ad dismissed, preloading next one');
+            this.isRewardedPrepared = false;
+            this.preloadRewarded();
+        });
+
+        AdMob.addListener(RewardAdPluginEvents.FailedToLoad, (error) => {
+            console.warn('Rewarded Ad failed to load, will retry later', error);
+            this.isRewardedLoading = false;
+            this.isRewardedPrepared = false;
+            // Retry after 30s
+            setTimeout(() => this.preloadRewarded(), 30000);
+        });
+
+        AdMob.addListener(RewardAdPluginEvents.Loaded, () => {
+            console.log('Rewarded Ad preloaded and ready');
+            this.isRewardedLoading = false;
+            this.isRewardedPrepared = true;
+        });
+    }
+
+    /**
+     * Preload an Interstitial ad if not already loading or prepared
+     */
+    async preloadInterstitial() {
+        if (!this.isInitialized || purchaseService.getIsPremium() || this.isInterstitialLoading || this.isInterstitialPrepared || !this.isOnline) {
+            return;
+        }
+
+        try {
+            this.isInterstitialLoading = true;
+            const options: AdOptions = {
+                adId: AD_UNITS.INTERSTITIAL,
+                isTesting: false
+            };
+            await AdMob.prepareInterstitial(options);
+        } catch (e) {
+            this.isInterstitialLoading = false;
+            console.error('Preload Interstitial error:', e);
+        }
+    }
+
+    /**
+     * Preload a Rewarded ad if not already loading or prepared
+     */
+    async preloadRewarded() {
+        if (!this.isInitialized || purchaseService.getIsPremium() || this.isRewardedLoading || this.isRewardedPrepared || !this.isOnline) {
+            return;
+        }
+
+        try {
+            this.isRewardedLoading = true;
+            const options: RewardAdOptions = {
+                adId: AD_UNITS.REWARDED,
+                isTesting: false
+            };
+            await AdMob.prepareRewardVideoAd(options);
+        } catch (e) {
+            this.isRewardedLoading = false;
+            console.error('Preload Rewarded error:', e);
         }
     }
 
@@ -55,6 +158,9 @@ class AdMobService {
             window.addEventListener('online', () => {
                 this.isOnline = true;
                 console.log('Network: Online');
+                // Try preloading once connection returns
+                this.preloadInterstitial();
+                this.preloadRewarded();
             });
             window.addEventListener('offline', () => {
                 this.isOnline = false;
@@ -97,8 +203,8 @@ class AdMobService {
                 adSize: BannerAdSize.ADAPTIVE_BANNER,
                 position: BannerAdPosition.BOTTOM_CENTER,
                 margin: 0,
-                isTesting: true,
-                npa: true // Non-personalized ads can sometimes help with layout consistency in test mode
+                isTesting: false,
+                npa: true
             };
             await AdMob.showBanner(options);
             return { success: true };
@@ -122,9 +228,16 @@ class AdMobService {
         if (!check.success) return check;
 
         try {
+            // If it's already prepared, just show it
+            if (this.isInterstitialPrepared) {
+                await AdMob.showInterstitial();
+                return { success: true };
+            }
+
+            // Fallback: If not prepared, try to prepare and show now (standard behavior)
             const options: AdOptions = {
                 adId: AD_UNITS.INTERSTITIAL,
-                isTesting: true
+                isTesting: false
             };
             await AdMob.prepareInterstitial(options);
             await AdMob.showInterstitial();
@@ -140,50 +253,31 @@ class AdMobService {
         if (!check.success) return check;
 
         return new Promise(async (resolve) => {
-            // Track listeners for proper cleanup
             let rewardListener: { remove: () => Promise<void> } | null = null;
-            let failedListener: { remove: () => Promise<void> } | null = null;
-            let dismissedListener: { remove: () => Promise<void> } | null = null;
             let resolved = false;
-
-            const cleanup = async () => {
-                if (rewardListener) await rewardListener.remove().catch(() => { });
-                if (failedListener) await failedListener.remove().catch(() => { });
-                if (dismissedListener) await dismissedListener.remove().catch(() => { });
-            };
 
             const safeResolve = async (result: AdResult) => {
                 if (resolved) return;
                 resolved = true;
-                await cleanup();
+                if (rewardListener) await rewardListener.remove().catch(() => { });
                 resolve(result);
             };
 
             try {
-                const options: RewardAdOptions = {
-                    adId: AD_UNITS.REWARDED,
-                    isTesting: true
-                };
-                await AdMob.prepareRewardVideoAd(options);
-
                 // Listen for successful reward
                 rewardListener = await AdMob.addListener(RewardAdPluginEvents.Rewarded, (reward) => {
                     console.log('Reward received:', reward);
                     safeResolve({ success: true });
                 });
 
-                // Listen for ad load/show failures
-                failedListener = await AdMob.addListener(RewardAdPluginEvents.FailedToLoad, (error) => {
-                    console.warn('Rewarded Ad failed to load:', error);
-                    safeResolve({ success: false, error: 'load_failed', message: 'Failed to load ad' });
-                });
-
-                // Listen for ad dismissed without reward (user closed early)
-                dismissedListener = await AdMob.addListener(RewardAdPluginEvents.Dismissed, () => {
-                    console.log('Rewarded Ad dismissed');
-                    // Only resolve false if not already rewarded
-                    setTimeout(() => safeResolve({ success: false, error: 'unknown', message: 'Ad dismissed' }), 100);
-                });
+                // If prepared, show. Otherwise, prepare and show.
+                if (!this.isRewardedPrepared) {
+                    const options: RewardAdOptions = {
+                        adId: AD_UNITS.REWARDED,
+                        isTesting: false
+                    };
+                    await AdMob.prepareRewardVideoAd(options);
+                }
 
                 await AdMob.showRewardVideoAd();
             } catch (e) {

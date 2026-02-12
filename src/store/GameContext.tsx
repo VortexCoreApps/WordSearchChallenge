@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { GameState, GameAction, UserProgress, WordInfo, Difficulty } from '../types';
-import { LEVEL_BLOCKS, COLORS, UI_CONFIG } from '../constants';
+import { LEVEL_BLOCKS, COLORS, UI_CONFIG, getLevelWithBlock } from '../constants';
 import { generateGrid, seededShuffle } from '../utils/gameUtils';
 import { audioSystem } from '../utils/audioSystem';
 import { setLanguage } from '../utils/i18n';
@@ -356,8 +356,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         if (action.type === 'START_CURRENT_LEVEL') {
-            const allLevels = LEVEL_BLOCKS.flatMap(b => b.levels.map(l => ({ level: l, block: b })));
-            const target = allLevels.find(x => x.level.id === progress.currentLevelId) || allLevels[0];
+            const target = getLevelWithBlock(progress.currentLevelId);
 
             // Update last play date when starting a level
             const today = new Date().toISOString().split('T')[0];

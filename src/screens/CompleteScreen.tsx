@@ -7,10 +7,14 @@ import { useGame } from '@/store/GameContext';
 import { formatTime } from '@/utils/gameUtils';
 import { t } from '@/utils/i18n';
 import { hapticService } from '@/services/hapticService';
+import { adMobService } from '@/services/adMobService';
+import { purchaseService } from '@/services/purchaseService';
+import { Play, Video } from 'lucide-react';
 import * as Icons from 'lucide-react';
 
 const CompleteScreen: React.FC = () => {
     const { state, progress, dispatch } = useGame();
+    const [showingAdWarning, setShowingAdWarning] = React.useState(false);
     const stars = progress.stars[state.currentLevel?.id || 0] || 0;
 
     useEffect(() => {
@@ -84,7 +88,17 @@ const CompleteScreen: React.FC = () => {
 
             <motion.div variants={itemVariants} className="flex flex-col w-full gap-4">
                 <button
-                    onClick={() => dispatch({ type: 'START_CURRENT_LEVEL' })}
+                    onClick={async () => {
+                        const levelId = state.currentLevel?.id || 0;
+                        if (levelId >= 10 && levelId % 5 === 0 && !purchaseService.getIsPremium()) {
+                            setShowingAdWarning(true);
+                            // Brief delay to let the user see the warning (2 seconds)
+                            await new Promise(resolve => setTimeout(resolve, 2000));
+                            await adMobService.showInterstitial();
+                            setShowingAdWarning(false);
+                        }
+                        dispatch({ type: 'START_CURRENT_LEVEL' });
+                    }}
                     className="w-full bg-[var(--color-ink)] text-[var(--color-paper)] py-5 rounded-[2.5rem] border-4 border-[var(--color-ink)] flex items-center justify-center space-x-4 shadow-[8px_8px_0px_0px_var(--shadow-light)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
                 >
                     <span className="text-2xl font-black uppercase italic tracking-tight">{t('nextLevel')}</span>
@@ -139,7 +153,56 @@ const CompleteScreen: React.FC = () => {
                 )}
             </AnimatePresence>
 
+            <AnimatePresence>
+                {showingAdWarning && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-[var(--color-ink)]/60 backdrop-blur-md flex items-center justify-center p-6"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20, rotate: -2 }}
+                            animate={{ scale: 1, y: 0, rotate: 0 }}
+                            exit={{ scale: 0.9, y: 20, rotate: 2 }}
+                            className="bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-[3rem] p-10 w-full max-w-sm text-center shadow-[16px_16px_0px_0px_var(--shadow-color)] relative overflow-hidden"
+                        >
+                            {/* Decorative background element matching game style */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#fbbf24] -translate-y-16 translate-x-16 rounded-full opacity-20" />
 
+                            <div className="w-20 h-20 bg-[#fbbf24] border-4 border-[var(--color-ink)] rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-[6px_6px_0px_0px_var(--color-ink)] rotate-[-6deg] animate-pulse">
+                                <Video className="w-10 h-10 text-[var(--color-ink)]" />
+                            </div>
+
+                            <h3 className="text-3xl font-black uppercase italic tracking-tighter mb-4 text-[var(--color-text-primary)] leading-none">
+                                {t('adNotice')}
+                            </h3>
+
+                            <p className="text-sm font-bold text-[var(--color-text-secondary)] uppercase tracking-[0.2em] mb-8 leading-relaxed max-w-[240px] mx-auto">
+                                {t('adNoticeDesc')}
+                            </p>
+
+                            <div className="flex items-center justify-center space-x-3">
+                                <motion.div
+                                    animate={{ scale: [1, 1.5, 1] }}
+                                    transition={{ repeat: Infinity, duration: 1, times: [0, 0.5, 1] }}
+                                    className="w-3 h-3 bg-[var(--color-ink)] rounded-full"
+                                />
+                                <motion.div
+                                    animate={{ scale: [1, 1.5, 1] }}
+                                    transition={{ repeat: Infinity, duration: 1, times: [0, 0.5, 1], delay: 0.2 }}
+                                    className="w-3 h-3 bg-[var(--color-ink)] rounded-full"
+                                />
+                                <motion.div
+                                    animate={{ scale: [1, 1.5, 1] }}
+                                    transition={{ repeat: Infinity, duration: 1, times: [0, 0.5, 1], delay: 0.4 }}
+                                    className="w-3 h-3 bg-[var(--color-ink)] rounded-full"
+                                />
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 };

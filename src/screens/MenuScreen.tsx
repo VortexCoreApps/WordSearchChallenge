@@ -6,7 +6,7 @@ import { useGame } from '@/store/GameContext';
 import { adMobService } from '@/services/adMobService';
 import { t, getLanguage } from '@/utils/i18n';
 import { purchaseService } from '@/services/purchaseService';
-import { ShieldCheck, RefreshCw } from 'lucide-react';
+import { ShieldCheck, RefreshCw, CheckCircle, Heart } from 'lucide-react';
 
 // Seeded random for stable background letters
 function seededRandom(seed: number): number {
@@ -17,6 +17,7 @@ function seededRandom(seed: number): number {
 const MenuScreen: React.FC = () => {
     const { progress, dispatch } = useGame();
     const [showAdConfirmation, setShowAdConfirmation] = useState(false);
+    const [showRemoveAdsModal, setShowRemoveAdsModal] = useState(false);
     const [rewardNotification, setRewardNotification] = useState<string | null>(null);
     const [isPremium, setIsPremium] = useState(purchaseService.getIsPremium());
 
@@ -36,7 +37,7 @@ const MenuScreen: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-full flex flex-col items-center justify-between max-w-lg mx-auto bg-[var(--color-background)] overflow-hidden relative font-sans p-8 pb-24">
+        <div className="h-full flex flex-col items-center justify-start max-w-lg mx-auto bg-[var(--color-background)] overflow-y-auto relative font-sans p-8 pb-40">
             {/* Thematic Background: Letter Grid Pattern */}
             <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none flex flex-wrap content-start p-4">
                 {backgroundLetters.map((letter, i) => (
@@ -199,11 +200,7 @@ const MenuScreen: React.FC = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={async () => {
-                            const success = await purchaseService.purchaseNoAds();
-                            if (!success) {
-                                setRewardNotification(t('error'));
-                                setTimeout(() => setRewardNotification(null), 3000);
-                            }
+                            setShowRemoveAdsModal(true);
                         }}
                         className="w-full bg-[#fde047] border-3 border-[#0f172a] p-4 rounded-2xl flex items-center justify-between shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] group mt-4"
                     >
@@ -231,6 +228,71 @@ const MenuScreen: React.FC = () => {
             </div>
 
             <AnimatePresence>
+                {showRemoveAdsModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--color-ink)]/60 backdrop-blur-sm"
+                        onClick={() => setShowRemoveAdsModal(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20, rotate: 2 }}
+                            animate={{ scale: 1, y: 0, rotate: 0 }}
+                            exit={{ scale: 0.9, y: 20, rotate: -2 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-[2.5rem] p-8 w-full max-w-sm shadow-[12px_12px_0px_0px_var(--shadow-color)] relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#fbbf24] -translate-y-16 translate-x-16 rounded-full opacity-10" />
+
+                            <button
+                                onClick={() => setShowRemoveAdsModal(false)}
+                                className="absolute top-4 right-4 text-[var(--color-text-light)] hover:text-[var(--color-text-primary)] transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+
+                            <div className="flex flex-col items-center">
+                                <div className="w-16 h-16 bg-[#fbbf24] border-3 border-[var(--color-ink)] rounded-2xl flex items-center justify-center mb-6 rotate-[-6deg] shadow-[4px_4px_0px_0px_var(--color-ink)]">
+                                    <ShieldCheck className="w-8 h-8 text-[var(--color-ink)]" />
+                                </div>
+
+                                <h3 className="text-3xl font-black uppercase italic tracking-tighter text-[var(--color-text-primary)] mb-6 leading-none text-center">
+                                    {t('premiumBenefitsTitle')}
+                                </h3>
+
+                                <div className="space-y-4 w-full mb-8">
+                                    {[t('benefit1'), t('benefit2'), t('benefit3')].map((benefit, i) => (
+                                        <div key={i} className="flex items-center gap-3 bg-[var(--color-background)] border-2 border-[var(--color-ink)] p-3 rounded-xl shadow-[4px_4px_0px_0px_var(--shadow-color)]">
+                                            <div className="bg-[#34d399] rounded-full p-1">
+                                                <CheckCircle className="w-4 h-4 text-white" />
+                                            </div>
+                                            <span className="font-bold text-sm uppercase tracking-tight text-[var(--color-text-primary)]">{benefit}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <motion.button
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={async () => {
+                                        const success = await purchaseService.purchaseNoAds();
+                                        if (success) {
+                                            setShowRemoveAdsModal(false);
+                                        } else {
+                                            setRewardNotification(t('error'));
+                                            setTimeout(() => setRewardNotification(null), 3000);
+                                        }
+                                    }}
+                                    className="w-full bg-[#fde047] border-4 border-[var(--color-ink)] py-4 rounded-2xl flex items-center justify-center gap-3 shadow-[6px_6px_0px_0px_var(--shadow-color)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_var(--shadow-color)] transition-all"
+                                >
+                                    <Heart className="w-5 h-5 text-[var(--color-ink)] fill-[var(--color-ink)]/10" />
+                                    <span className="text-xl font-black uppercase italic tracking-tight">{t('buyNow')}</span>
+                                </motion.button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+
                 {showAdConfirmation && (
                     <motion.div
                         initial={{ opacity: 0 }}
