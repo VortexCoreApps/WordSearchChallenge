@@ -5,7 +5,7 @@ import { Play, Trophy, Coins, Star, X, Video, Settings } from 'lucide-react';
 import { useGame } from '@/store/GameContext';
 import { adMobService } from '@/services/adMobService';
 import { t, getLanguage } from '@/utils/i18n';
-import { purchaseService } from '@/services/purchaseService';
+import { iapService, IAP_PRODUCTS } from '@/services/IAPService';
 import { ShieldCheck, RefreshCw, CheckCircle, Heart } from 'lucide-react';
 
 // Seeded random for stable background letters
@@ -19,7 +19,7 @@ const MenuScreen: React.FC = () => {
     const [showAdConfirmation, setShowAdConfirmation] = useState(false);
     const [showRemoveAdsModal, setShowRemoveAdsModal] = useState(false);
     const [rewardNotification, setRewardNotification] = useState<string | null>(null);
-    const [isPremium, setIsPremium] = useState(purchaseService.getIsPremium());
+    const [isPremium, setIsPremium] = useState(iapService.getIsPremium());
 
     React.useEffect(() => {
         const handlePremiumChange = (e: any) => {
@@ -219,7 +219,7 @@ const MenuScreen: React.FC = () => {
                                 className="w-4 h-4 text-[#0f172a] opacity-40 group-hover:rotate-180 transition-transform duration-500 cursor-pointer"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    purchaseService.restorePurchases();
+                                    iapService.restorePurchases();
                                 }}
                             />
                         </div>
@@ -275,11 +275,16 @@ const MenuScreen: React.FC = () => {
                                 <motion.button
                                     whileTap={{ scale: 0.95 }}
                                     onClick={async () => {
-                                        const success = await purchaseService.purchaseNoAds();
-                                        if (success) {
+                                        const result = await iapService.purchase(IAP_PRODUCTS.NO_ADS);
+
+                                        // Web simulation - éxito inmediato
+                                        if (result.success && !result.pending) {
+                                            setIsPremium(true);
                                             setShowRemoveAdsModal(false);
-                                        } else {
-                                            setRewardNotification(t('error'));
+                                        }
+                                        // Si pending=true, el callback onPurchaseComplete se encargará
+                                        else if (result.error && !result.pending) {
+                                            setRewardNotification(result.error);
                                             setTimeout(() => setRewardNotification(null), 3000);
                                         }
                                     }}

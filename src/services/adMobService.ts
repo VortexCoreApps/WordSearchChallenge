@@ -9,7 +9,7 @@ import {
     RewardAdPluginEvents,
     InterstitialAdPluginEvents
 } from '@capacitor-community/admob';
-import { purchaseService } from './purchaseService';
+import { iapService } from './IAPService';
 
 // Test IDs from official AdMob documentation
 export const AD_UNITS = {
@@ -115,7 +115,7 @@ class AdMobService {
      * Preload an Interstitial ad if not already loading or prepared
      */
     async preloadInterstitial() {
-        if (!this.isInitialized || purchaseService.getIsPremium() || this.isInterstitialLoading || this.isInterstitialPrepared || !this.isOnline) {
+        if (!this.isInitialized || iapService.getIsPremium() || this.isInterstitialLoading || this.isInterstitialPrepared || !this.isOnline) {
             return;
         }
 
@@ -136,7 +136,7 @@ class AdMobService {
      * Preload a Rewarded ad if not already loading or prepared
      */
     async preloadRewarded() {
-        if (!this.isInitialized || purchaseService.getIsPremium() || this.isRewardedLoading || this.isRewardedPrepared || !this.isOnline) {
+        if (!this.isInitialized || iapService.getIsPremium() || this.isRewardedLoading || this.isRewardedPrepared || !this.isOnline) {
             return;
         }
 
@@ -187,7 +187,7 @@ class AdMobService {
         if (!this.isOnline) {
             return { success: false, error: 'no_connection', message: 'No internet connection' };
         }
-        if (purchaseService.getIsPremium()) {
+        if (iapService.getIsPremium()) {
             return { success: false, error: 'unknown', message: 'User is premium, ads disabled' };
         }
         return { success: true };
@@ -228,23 +228,19 @@ class AdMobService {
         if (!check.success) return check;
 
         try {
-            // If it's already prepared, just show it
+            // Only show if already pre-loaded — never block UI with prepare+show
             if (this.isInterstitialPrepared) {
                 await AdMob.showInterstitial();
                 return { success: true };
             }
 
-            // Fallback: If not prepared, try to prepare and show now (standard behavior)
-            const options: AdOptions = {
-                adId: AD_UNITS.INTERSTITIAL,
-                isTesting: false
-            };
-            await AdMob.prepareInterstitial(options);
-            await AdMob.showInterstitial();
-            return { success: true };
+            // Not ready — skip this time and ensure it's preloading for next time
+            console.log('Interstitial not pre-loaded, skipping and preloading for next time');
+            this.preloadInterstitial();
+            return { success: false, error: 'load_failed', message: 'Ad not ready yet' };
         } catch (e) {
             console.error('Interstitial error:', e);
-            return { success: false, error: 'load_failed', message: 'Failed to load interstitial' };
+            return { success: false, error: 'load_failed', message: 'Failed to show interstitial' };
         }
     }
 

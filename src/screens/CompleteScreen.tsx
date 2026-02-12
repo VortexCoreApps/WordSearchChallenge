@@ -8,7 +8,7 @@ import { formatTime } from '@/utils/gameUtils';
 import { t } from '@/utils/i18n';
 import { hapticService } from '@/services/hapticService';
 import { adMobService } from '@/services/adMobService';
-import { purchaseService } from '@/services/purchaseService';
+import { iapService } from '@/services/IAPService';
 import { Play, Video } from 'lucide-react';
 import * as Icons from 'lucide-react';
 
@@ -90,13 +90,26 @@ const CompleteScreen: React.FC = () => {
                 <button
                     onClick={async () => {
                         const levelId = state.currentLevel?.id || 0;
-                        if (levelId >= 10 && levelId % 5 === 0 && !purchaseService.getIsPremium()) {
+                        const shouldShowAd = levelId >= 10 && levelId % 5 === 0 && !iapService.getIsPremium();
+
+                        if (shouldShowAd) {
                             setShowingAdWarning(true);
-                            // Brief delay to let the user see the warning (2 seconds)
-                            await new Promise(resolve => setTimeout(resolve, 2000));
-                            await adMobService.showInterstitial();
+
+                            try {
+                                // Show the interstitial (only if pre-loaded, otherwise skip)
+                                // The adMobService already handles prepare-and-show fallback
+                                await adMobService.showInterstitial();
+                            } catch (e) {
+                                console.warn('Interstitial ad failed, skipping', e);
+                            }
+
                             setShowingAdWarning(false);
+
+                            // Give the device a moment to recover from the ad overlay
+                            // before generating the next level and rendering
+                            await new Promise(resolve => setTimeout(resolve, 300));
                         }
+
                         dispatch({ type: 'START_CURRENT_LEVEL' });
                     }}
                     className="w-full bg-[var(--color-ink)] text-[var(--color-paper)] py-5 rounded-[2.5rem] border-4 border-[var(--color-ink)] flex items-center justify-center space-x-4 shadow-[8px_8px_0px_0px_var(--shadow-light)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"

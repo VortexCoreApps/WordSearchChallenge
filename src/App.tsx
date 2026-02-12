@@ -11,7 +11,7 @@ import TrophyAlbum from '@/screens/TrophyAlbum';
 import LevelSelection from '@/screens/LevelSelection';
 import SettingsScreen from '@/screens/SettingsScreen';
 import { adMobService } from '@/services/adMobService';
-import { purchaseService } from '@/services/purchaseService';
+import { iapService, IAP_PRODUCTS } from '@/services/IAPService';
 import { App as CapApp } from '@capacitor/app';
 
 const screenVariants = {
@@ -31,10 +31,21 @@ import AchievementToast from '@/components/ui/AchievementToast';
 const AppContent: React.FC = () => {
     const { state, progress, dispatch } = useGame();
 
-    // 0. Initialize AdMob and PurchaseService ONLY ONCE on mount
+    // 0. Initialize AdMob and IAPService ONLY ONCE on mount
     React.useEffect(() => {
         adMobService.initialize();
-        purchaseService.initialize();
+
+        iapService.initialize().then(() => {
+            // Si ya tiene no_ads comprado, ocultar banner
+            if (iapService.isOwned(IAP_PRODUCTS.NO_ADS)) {
+                adMobService.hideBanner();
+            }
+
+            // Registrar callback para cuando se complete la compra
+            iapService.onPurchaseComplete(IAP_PRODUCTS.NO_ADS, () => {
+                adMobService.hideBanner();
+            });
+        });
     }, []);
 
     React.useEffect(() => {

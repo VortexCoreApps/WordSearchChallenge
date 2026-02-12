@@ -131,6 +131,11 @@ export interface Translations {
     noTrophiesYet: string;
     noAchievementsYet: string;
     master: string;
+    selectLevel: string;
+    replay: string;
+    notPlayed: string;
+    completed: string;
+    play: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -255,6 +260,11 @@ const translations: Record<Language, Translations> = {
         noTrophiesYet: 'No trophies yet',
         noAchievementsYet: 'No achievements yet',
         master: 'Master',
+        selectLevel: 'Select Level',
+        replay: 'Replay',
+        notPlayed: 'Not played',
+        completed: 'Completed',
+        play: 'Play',
     },
 
     es: {
@@ -378,6 +388,11 @@ const translations: Record<Language, Translations> = {
         noTrophiesYet: 'Sin trofeos aún',
         noAchievementsYet: 'Sin logros aún',
         master: 'Maestro',
+        selectLevel: 'Seleccionar Nivel',
+        replay: 'Rejugar',
+        notPlayed: 'Sin jugar',
+        completed: 'Completado',
+        play: 'Jugar',
     },
 };
 
