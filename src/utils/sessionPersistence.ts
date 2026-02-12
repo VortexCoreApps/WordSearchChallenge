@@ -17,6 +17,7 @@ export interface SavedSession {
     foundWordsCells: { row: number; col: number; color: string }[];
     hintedCells: { row: number; col: number }[];
     timeElapsed: number;
+    view: 'game' | 'complete';
     savedAt: number; // timestamp
 }
 
@@ -36,6 +37,7 @@ export function saveSession(state: GameState): void {
         foundWordsCells: state.foundWordsCells,
         hintedCells: state.hintedCells,
         timeElapsed: state.timeElapsed,
+        view: state.view as 'game' | 'complete',
         savedAt: Date.now(),
     };
 

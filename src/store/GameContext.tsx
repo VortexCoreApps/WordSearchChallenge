@@ -96,9 +96,9 @@ function gameReducer(state: GameState, action: GameAction): GameState {
                 foundWordsCells: session.foundWordsCells,
                 hintedCells: session.hintedCells,
                 timeElapsed: session.timeElapsed,
-                view: 'game',
-                isPaused: false,
-                hasProcessedCompletion: false,
+                view: session.view || 'game',
+                isPaused: session.view === 'game',
+                hasProcessedCompletion: session.view === 'complete',
             };
         }
 
@@ -511,13 +511,35 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return () => clearInterval(timer);
     }, [state.view, state.isPaused]);
 
-    // Auto-save session during active game
-    // Note: timeElapsed is omitted to avoid saving every second (major flickering source)
+    // Auto-save session during active game or complete screen
     useEffect(() => {
-        if (state.view === 'game' && state.currentLevel) {
+        if ((state.view === 'game' || state.view === 'complete') && state.currentLevel) {
             saveSession(state);
         }
     }, [state.view, state.wordsInfo, state.foundWordsCells, state.hintedCells]);
+
+    // Restore session on mount if one exists
+    // This handles the case where the WebView was destroyed while backgrounded
+    const hasAttemptedRestore = React.useRef(false);
+    useEffect(() => {
+        if (hasAttemptedRestore.current) return;
+        hasAttemptedRestore.current = true;
+
+        const session = loadSession();
+        if (session && progress.hasSeenTutorial) {
+            try {
+                const target = getLevelWithBlock(session.levelId);
+                dispatch({
+                    type: 'RESTORE_SESSION',
+                    payload: { level: target.level, block: target.block, session }
+                });
+                console.log('Session restored for level', session.levelId);
+            } catch (e) {
+                console.warn('Failed to restore session:', e);
+                clearSession();
+            }
+        }
+    }, []);
 
     // Clear session when leaving game without completing
     useEffect(() => {
