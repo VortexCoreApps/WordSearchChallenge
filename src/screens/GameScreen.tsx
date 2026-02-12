@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, RefreshCw, Clock, Pause, Lightbulb, Coins, Play, Volume2, VolumeX, Smartphone, SmartphoneNfc } from 'lucide-react';
 import { useGame } from '@/store/GameContext';
@@ -9,6 +9,7 @@ import { formatTime } from '@/utils/gameUtils';
 import { UI_CONFIG } from '@/constants';
 import { audioSystem } from '@/utils/audioSystem';
 import { t, getFeedbackMessages } from '@/utils/i18n';
+import { getWorldTheme, getBlockIndexFromLevelId } from '@/constants/worldThemes';
 
 const TimerDisplay: React.FC<{ time: number }> = React.memo(({ time }) => {
     return (
@@ -63,8 +64,37 @@ const GameScreen: React.FC = () => {
 
     const foundCount = wordsInfo.filter(w => w.found).length;
 
+    // Get world theme for current level
+    const worldTheme = useMemo(() => {
+        const blockIndex = getBlockIndexFromLevelId(currentLevel.id);
+        return getWorldTheme(blockIndex);
+    }, [currentLevel.id]);
+
     return (
         <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-20 touch-none max-w-lg mx-auto overflow-hidden relative">
+            {/* World-themed ambient background — fixed to fill entire viewport */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
+                {/* Top-right glow */}
+                <div
+                    className="absolute w-80 h-80 rounded-full blur-3xl"
+                    style={{ background: worldTheme.accent, top: '-8%', right: '-10%', opacity: 0.18 }}
+                />
+                {/* Bottom-left glow */}
+                <div
+                    className="absolute w-72 h-72 rounded-full blur-3xl"
+                    style={{ background: worldTheme.glow, bottom: '0%', left: '-15%', opacity: 0.15 }}
+                />
+                {/* Center subtle wash */}
+                <div
+                    className="absolute rounded-full blur-3xl"
+                    style={{
+                        background: `radial-gradient(circle, ${worldTheme.accent}22 0%, transparent 70%)`,
+                        width: '120%', height: '60%',
+                        top: '25%', left: '-10%',
+                        opacity: 0.5
+                    }}
+                />
+            </div>
             <AnimatePresence>
                 {feedback && (
                     <motion.div
@@ -98,8 +128,8 @@ const GameScreen: React.FC = () => {
                     </button>
                 </div>
                 <div className="text-center">
-                    <p className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.3em] mb-1">
-                        {currentBlock?.name || 'Journey'}
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-1" style={{ color: worldTheme.accent }}>
+                        {worldTheme.emoji} {currentBlock?.name || 'Journey'}
                     </p>
                     <h3 className="text-xl font-black text-[var(--color-text-primary)] uppercase italic leading-tight">
                         {t('levelLabel')} {currentLevel.id}
