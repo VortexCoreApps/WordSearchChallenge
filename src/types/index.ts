@@ -86,7 +86,7 @@ export interface GameState {
 
 export type GameAction =
     | { type: 'SET_VIEW'; payload: GameState['view'] }
-    | { type: 'START_LEVEL'; payload: { level: Level; block: LevelBlock } }
+    | { type: 'START_LEVEL'; payload: { level: Level; block: LevelBlock; grid: GridCell[][]; placements: Record<string, { row: number, col: number }[]> } }
     | { type: 'START_CURRENT_LEVEL' }
     | { type: 'RESTORE_SESSION'; payload: { level: Level; block: LevelBlock; session: any } }
     | { type: 'WORD_FOUND'; payload: { word: string; cells: { row: number; col: number }[] } }

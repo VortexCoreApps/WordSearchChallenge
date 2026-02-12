@@ -16,7 +16,7 @@ class SeededRNG {
 }
 
 export function generateGrid(size: number, words: string[], seed?: number): { grid: GridCell[][], placements: Record<string, { row: number, col: number }[]> } {
-    const MAX_RETRIES = 50;
+    const MAX_RETRIES = 100;
 
     for (let retry = 0; retry < MAX_RETRIES; retry++) {
         // Deterministic variation of seed for each retry
@@ -41,7 +41,7 @@ export function generateGrid(size: number, words: string[], seed?: number): { gr
             let placed = false;
             let attempts = 0;
             // Try to place this specific word
-            while (!placed && attempts < 100) {
+            while (!placed && attempts < 150) {
                 const dir = directions[Math.floor(rng.next() * directions.length)];
                 const r = Math.floor(rng.next() * size);
                 const col = Math.floor(rng.next() * size);

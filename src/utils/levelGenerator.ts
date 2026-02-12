@@ -61,8 +61,11 @@ export function generateLevel(levelId: number, lang?: SupportedLanguage): Level 
         return levelCache.get(cacheKey)!;
     }
 
-    const blockIndex = Math.floor((levelId - 1) / LEVELS_PER_BLOCK);
-    const levelIndexInBlock = (levelId - 1) % LEVELS_PER_BLOCK;
+    // Safety: ensure levelId is within bounds
+    const safeLevelId = Math.max(1, Math.min(levelId, TOTAL_LEVELS));
+
+    const blockIndex = Math.floor((safeLevelId - 1) / LEVELS_PER_BLOCK);
+    const levelIndexInBlock = (safeLevelId - 1) % LEVELS_PER_BLOCK;
 
     const categories = getCategories();
     const categoryKey = categories[blockIndex % categories.length];

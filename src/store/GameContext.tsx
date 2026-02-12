@@ -56,10 +56,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
             return { ...state, view: action.payload };
 
         case 'START_LEVEL': {
-            const { level, block } = action.payload;
-
-            // Use level.id as seed for deterministic grid generation
-            const { grid, placements } = generateGrid(level.gridSize, level.words, level.id);
+            const { level, block, grid, placements } = action.payload;
 
             // Seeded shuffle for colors so color assignment is also deterministic
             const shuffledColors = seededShuffle([...COLORS], level.id);
@@ -70,6 +67,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
                 color: shuffledColors[i % shuffledColors.length],
                 cells: placements[w]
             }));
+
             return {
                 ...state,
                 currentLevel: level,
@@ -358,6 +356,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (action.type === 'START_CURRENT_LEVEL') {
             const target = getLevelWithBlock(progress.currentLevelId);
 
+            // Pre-calculate grid OUTSIDE of reducer to prevent UI thread hangs on Android
+            const { grid, placements } = generateGrid(target.level.gridSize, target.level.words, target.level.id);
+
             // Update last play date when starting a level
             const today = new Date().toISOString().split('T')[0];
             setProgress(prev => ({
@@ -365,7 +366,36 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 stats: { ...prev.stats, lastPlayDate: today }
             }));
 
-            dispatch({ type: 'START_LEVEL', payload: target });
+            dispatch({
+                type: 'START_LEVEL',
+                payload: {
+                    level: target.level,
+                    block: target.block,
+                    grid,
+                    placements
+                }
+            });
+            return;
+        }
+
+        if (action.type === 'START_LEVEL') {
+            // Already includes grid/placements if coming from components, 
+            // but if called directly we should ensure they exist.
+            // Usually this is called from LevelSelection or START_CURRENT_LEVEL.
+            const { level } = action.payload;
+            let grid = (action.payload as any).grid;
+            let placements = (action.payload as any).placements;
+
+            if (!grid || !placements) {
+                const generated = generateGrid(level.gridSize, level.words, level.id);
+                grid = generated.grid;
+                placements = generated.placements;
+            }
+
+            dispatch({
+                type: 'START_LEVEL',
+                payload: { ...action.payload, grid, placements }
+            });
             return;
         }
 

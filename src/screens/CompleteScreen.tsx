@@ -106,10 +106,11 @@ const CompleteScreen: React.FC = () => {
                             setShowingAdWarning(false);
 
                             // Give the device a moment to recover from the ad overlay
-                            // before generating the next level and rendering
                             await new Promise(resolve => setTimeout(resolve, 300));
                         }
 
+                        // Mandatory stabilization delay to prevent race conditions and UI lockups during level transition
+                        await new Promise(resolve => setTimeout(resolve, 150));
                         dispatch({ type: 'START_CURRENT_LEVEL' });
                     }}
                     className="w-full bg-[var(--color-ink)] text-[var(--color-paper)] py-5 rounded-[2.5rem] border-4 border-[var(--color-ink)] flex items-center justify-center space-x-4 shadow-[8px_8px_0px_0px_var(--shadow-light)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"
