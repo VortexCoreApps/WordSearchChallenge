@@ -12,14 +12,14 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Enable Edge-to-Edge
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         // Fix: Android WebView blank screen after app is backgrounded.
