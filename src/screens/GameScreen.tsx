@@ -94,7 +94,7 @@ const GameScreen: React.FC = () => {
     }, [currentLevel.id]);
 
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-16 touch-none max-w-lg mx-auto overflow-hidden relative">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-16 pt-[calc(var(--safe-top)+4px)] touch-none max-w-lg mx-auto overflow-hidden relative overflow-x-hidden">
             {/* World-themed ambient background — fixed to fill entire viewport */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
                 {/* Top-right glow */}

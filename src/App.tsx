@@ -151,7 +151,7 @@ const App: React.FC = () => {
                     animate="animate"
                     exit="exit"
                     transition={transition}
-                    className="absolute inset-0 w-full h-full overflow-y-auto hide-scrollbar pt-[calc(var(--safe-top)+12px)] pb-[var(--safe-bottom)] pl-[var(--safe-left)] pr-[var(--safe-right)]"
+                    className="absolute inset-0 w-full h-full overflow-hidden"
                 >
                     {view === 'splash' && <SplashScreen />}
                     {view === 'menu' && <MenuScreen />}

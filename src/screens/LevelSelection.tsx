@@ -86,7 +86,7 @@ const LevelSelection: React.FC = () => {
         const theme = getWorldTheme(selectedBlockIndex);
 
         return (
-            <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 max-w-lg mx-auto overflow-y-auto">
+            <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 pt-[calc(var(--safe-top)+12px)] max-w-lg mx-auto overflow-y-auto">
                 {/* Themed header banner */}
                 <motion.div
                     initial={{ y: -20, opacity: 0 }}
@@ -217,7 +217,7 @@ const LevelSelection: React.FC = () => {
 
     // ─── World List View ─────────────────────────────────────
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 max-w-lg mx-auto overflow-y-auto">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pb-24 pt-[calc(var(--safe-top)+12px)] max-w-lg mx-auto overflow-y-auto overflow-x-hidden">
             <header className="flex items-center space-x-6 mb-8 mt-4 px-2">
                 <button
                     onClick={handleBack}

@@ -146,7 +146,7 @@ const OnboardingScreen: React.FC = () => {
     ];
 
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-8 text-center font-sans overflow-hidden pb-16">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-8 pt-[calc(var(--safe-top)+20px)] text-center font-sans overflow-y-auto overflow-x-hidden pb-16">
             {/* All content grouped and centered together */}
             <div className="flex-1 flex flex-col items-center justify-center space-y-10 sm:space-y-14">
                 {/* Header / Title Area */}

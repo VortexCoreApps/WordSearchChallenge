@@ -47,7 +47,7 @@ const MenuScreen: React.FC = () => {
     }, []);
 
     return (
-        <div className="h-full flex flex-col items-center justify-start max-w-lg mx-auto bg-[var(--color-background)] overflow-hidden relative font-sans px-4 pt-4 pb-20">
+        <div className="h-full flex flex-col items-center justify-start max-w-lg mx-auto bg-[var(--color-background)] overflow-y-auto hide-scrollbar relative font-sans px-4 pb-20 pt-[calc(var(--safe-top)+12px)]">
             {/* Thematic Background: Letter Grid Pattern */}
             <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none flex flex-wrap content-start overflow-hidden">
                 {backgroundLetters.map((letter, i) => (

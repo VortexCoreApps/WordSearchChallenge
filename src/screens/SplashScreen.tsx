@@ -7,7 +7,7 @@ import { t } from '@/utils/i18n';
 
 const SplashScreen: React.FC = () => {
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col items-center justify-center p-6 text-center">
+        <div className="h-full bg-[var(--color-background)] flex flex-col items-center justify-center p-6 pt-[var(--safe-top)] text-center overflow-x-hidden">
             <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}

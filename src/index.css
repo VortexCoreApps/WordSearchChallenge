@@ -143,3 +143,12 @@ body {
     border-radius: 0.75rem;
     z-index: 0;
 }
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}

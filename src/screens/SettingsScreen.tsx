@@ -30,7 +30,7 @@ const SettingsScreen: React.FC = () => {
     };
 
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-6 max-w-lg mx-auto overflow-hidden">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-6 pt-[calc(var(--safe-top)+12px)] max-w-lg mx-auto overflow-y-auto overflow-x-hidden">
             <header className="flex items-center justify-between mb-10 mt-4">
                 <button
                     onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}
