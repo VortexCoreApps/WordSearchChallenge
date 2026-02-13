@@ -1,9 +1,9 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, RefreshCw, Clock, Pause, Lightbulb, Coins, Play, Volume2, VolumeX, Smartphone, SmartphoneNfc } from 'lucide-react';
-import { useGame } from '@/store/GameContext';
-import WordSearchGrid from '@/components/game/WordSearchGrid';
+import { useGameStore } from '@/store/useGameStore';
+import WordSearchGrid from '@/components/game/WordSearchGridCanvas';
 import WordList from '@/components/game/WordList';
 import { formatTime } from '@/utils/gameUtils';
 import { UI_CONFIG } from '@/constants';
@@ -39,11 +39,26 @@ const ProgressDisplay: React.FC<{ found: number, total: number }> = React.memo((
 });
 
 const GameScreen: React.FC = () => {
-    const { state, progress, dispatch } = useGame();
+    const state = useGameStore();
+    const {
+        currentLevel, currentBlock, grid, wordsInfo, foundWordsCells,
+        timeElapsed, isPaused, progress, setView, wordFound, togglePause, useHint,
+        toggleSound, toggleVibration, tickTimer
+    } = state;
+
+    // Dispatch shim for ease of migration if needed, but we'll use direct calls
+    const dispatch = useMemo(() => (action: any) => {
+        if (action.type === 'SET_VIEW') setView(action.payload);
+        if (action.type === 'TOGGLE_PAUSE') togglePause();
+        if (action.type === 'USE_HINT') useHint(action.payload.type);
+        if (action.type === 'TOGGLE_SOUND') toggleSound();
+        if (action.type === 'TOGGLE_VIBRATION') toggleVibration();
+        if (action.type === 'WORD_FOUND') wordFound(action.payload.word, action.payload.cells);
+    }, [setView, togglePause, useHint, toggleSound, toggleVibration, wordFound]);
+
     const [showHintMenu, setShowHintMenu] = useState(false);
     const [boardRotation, setBoardRotation] = useState(0);
     const [feedback, setFeedback] = useState<{ message: string, color: string } | null>(null);
-    const { currentLevel, currentBlock, grid, wordsInfo, foundWordsCells, timeElapsed, isPaused } = state;
 
     // Get localized feedback messages
     const feedbackMessages = getFeedbackMessages();
@@ -51,14 +66,22 @@ const GameScreen: React.FC = () => {
     const handleWordFound = React.useCallback((word: string, cells: { row: number, col: number }[]) => {
         const wordInfo = wordsInfo.find(w => (w.word === word || w.word === [...word].reverse().join('')) && !w.found);
         if (wordInfo) {
-            dispatch({ type: 'WORD_FOUND', payload: { word: wordInfo.word, cells } });
+            wordFound(wordInfo.word, cells);
             setFeedback({
                 message: feedbackMessages[Math.floor(Math.random() * feedbackMessages.length)],
                 color: wordInfo.color
             });
             setTimeout(() => setFeedback(null), 1500);
         }
-    }, [wordsInfo, feedbackMessages, dispatch]);
+    }, [wordsInfo, feedbackMessages, wordFound]);
+
+    // Setup timer effect here since it was in context before
+    useEffect(() => {
+        const timerId = setInterval(() => {
+            tickTimer();
+        }, 1000);
+        return () => clearInterval(timerId);
+    }, [tickTimer]);
 
     if (!currentLevel) return null;
 
@@ -156,9 +179,7 @@ const GameScreen: React.FC = () => {
                     className="w-full max-w-[360px] flex justify-center"
                 >
                     <WordSearchGrid
-                        grid={grid}
                         onWordFound={handleWordFound}
-                        foundWordsCells={foundWordsCells}
                         rotation={boardRotation}
                     />
                 </motion.div>

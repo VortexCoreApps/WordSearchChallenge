@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Trophy, Coins, Star, X, Video, Settings } from 'lucide-react';
-import { useGame } from '@/store/GameContext';
+import { useGameStore } from '@/store/useGameStore';
 import { adMobService } from '@/services/adMobService';
 import { t, getLanguage } from '@/utils/i18n';
 import { iapService, IAP_PRODUCTS } from '@/services/IAPService';
@@ -15,7 +15,17 @@ function seededRandom(seed: number): number {
 }
 
 const MenuScreen: React.FC = () => {
-    const { progress, dispatch } = useGame();
+    const progress = useGameStore(state => state.progress);
+    const setView = useGameStore(state => state.setView);
+    const startCurrentLevel = useGameStore(state => state.startCurrentLevel);
+    const addCoins = useGameStore(state => state.addCoins);
+
+    // For dispatch compatibility or ease of migration
+    const dispatch = useMemo(() => (action: any) => {
+        if (action.type === 'SET_VIEW') setView(action.payload);
+        if (action.type === 'START_CURRENT_LEVEL') startCurrentLevel();
+        if (action.type === 'ADD_COINS') addCoins(action.payload);
+    }, [setView, startCurrentLevel, addCoins]);
     const [showAdConfirmation, setShowAdConfirmation] = useState(false);
     const [showRemoveAdsModal, setShowRemoveAdsModal] = useState(false);
     const [rewardNotification, setRewardNotification] = useState<string | null>(null);

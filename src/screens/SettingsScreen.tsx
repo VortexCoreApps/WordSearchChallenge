@@ -1,16 +1,31 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Volume2, VolumeX, Smartphone, SmartphoneNfc, Trash2, Shield, Globe } from 'lucide-react';
-import { useGame } from '@/store/GameContext';
+import { useGameStore } from '@/store/useGameStore';
 import { t, getLanguage } from '@/utils/i18n';
 
 const SettingsScreen: React.FC = () => {
-    const { progress, dispatch } = useGame();
+    const progress = useGameStore(state => state.progress);
+    const setView = useGameStore(state => state.setView);
+    const toggleSound = useGameStore(state => state.toggleSound);
+    const toggleVibration = useGameStore(state => state.toggleVibration);
+    const setLanguage = useGameStore(state => state.setLanguage);
+    const resetProgress = useGameStore(state => state.resetProgress);
+
+    // Dispatch shim for ease of migration
+    const dispatch = React.useMemo(() => (action: any) => {
+        if (action.type === 'SET_VIEW') setView(action.payload);
+        if (action.type === 'TOGGLE_SOUND') toggleSound();
+        if (action.type === 'TOGGLE_VIBRATION') toggleVibration();
+        if (action.type === 'SET_LANGUAGE') setLanguage(action.payload);
+        if (action.type === 'RESET_PROGRESS') resetProgress();
+    }, [setView, toggleSound, toggleVibration, setLanguage, resetProgress]);
+
     const currentLang = getLanguage();
 
     const handleReset = () => {
-        if (confirm(t('confirmReset') || 'Are you sure you want to reset all progress? This cannot be undone.')) {
-            dispatch({ type: 'RESET_PROGRESS' });
+        if (window.confirm(t('confirmReset') || 'Are you sure you want to reset all progress? This cannot be undone.')) {
+            resetProgress();
         }
     };
 

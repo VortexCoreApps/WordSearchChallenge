@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, ArrowLeft, Lock, Sparkles, Award, Star, Search, Target, Crown, Play, Shield, Gem, Zap, Timer, Flame, Calendar, CalendarCheck, Coins, Wallet } from 'lucide-react';
-import { useGame } from '@/store/GameContext';
+import { useGameStore } from '@/store/useGameStore';
 import { LEVEL_BLOCKS, getBlockList } from '@/constants';
 import { t } from '@/utils/i18n';
 import { ACHIEVEMENTS } from '@/utils/achievements';
@@ -13,7 +13,13 @@ const AchievementIcons: Record<string, any> = {
 };
 
 const TrophyAlbum: React.FC = () => {
-    const { progress, dispatch } = useGame();
+    const progress = useGameStore(state => state.progress);
+    const setView = useGameStore(state => state.setView);
+
+    // Dispatch shim for ease of migration
+    const dispatch = React.useMemo(() => (action: any) => {
+        if (action.type === 'SET_VIEW') setView(action.payload);
+    }, [setView]);
     const [activeTab, setActiveTab] = useState<'trophies' | 'achievements'>('trophies');
 
     const getIcon = (iconName: string, isUnlocked: boolean, isAchievement: boolean = false) => {

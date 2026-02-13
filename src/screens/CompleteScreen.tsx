@@ -1,9 +1,9 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Trophy, ArrowRight, Home, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { useGame } from '@/store/GameContext';
+import { useGameStore } from '@/store/useGameStore';
 import { formatTime } from '@/utils/gameUtils';
 import { t } from '@/utils/i18n';
 import { hapticService } from '@/services/hapticService';
@@ -13,7 +13,19 @@ import { Play, Video } from 'lucide-react';
 import * as Icons from 'lucide-react';
 
 const CompleteScreen: React.FC = () => {
-    const { state, progress, dispatch } = useGame();
+    const state = useGameStore();
+    const progress = useGameStore(state => state.progress);
+    const setView = useGameStore(state => state.setView);
+    const startCurrentLevel = useGameStore(state => state.startCurrentLevel);
+    const closeTrophyReveal = useGameStore(state => state.closeTrophyReveal);
+
+    // Dispatch shim for ease of migration
+    const dispatch = useMemo(() => (action: any) => {
+        if (action.type === 'SET_VIEW') setView(action.payload);
+        if (action.type === 'START_CURRENT_LEVEL') startCurrentLevel();
+        if (action.type === 'CLOSE_TROPHY_REVEAL') closeTrophyReveal();
+    }, [setView, startCurrentLevel, closeTrophyReveal]);
+
     const [showingAdWarning, setShowingAdWarning] = React.useState(false);
     const stars = progress.stars[state.currentLevel?.id || 0] || 0;
 

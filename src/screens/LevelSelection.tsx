@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, ArrowLeft, Lock, Star, ChevronRight, RotateCcw } from 'lucide-react';
-import { useGame } from '@/store/GameContext';
+import { useGameStore } from '@/store/useGameStore';
 import { getBlockList } from '@/constants';
 import { getLevelWithBlock } from '@/utils/levelGenerator';
 import { getWorldTheme } from '@/constants/worldThemes';
@@ -11,7 +11,15 @@ import { t } from '@/utils/i18n';
 const LEVELS_PER_BLOCK = 50;
 
 const LevelSelection: React.FC = () => {
-    const { progress, dispatch } = useGame();
+    const progress = useGameStore(state => state.progress);
+    const setView = useGameStore(state => state.setView);
+    const startLevel = useGameStore(state => state.startLevel);
+
+    // Dispatch shim for ease of migration
+    const dispatch = React.useMemo(() => (action: any) => {
+        if (action.type === 'SET_VIEW') setView(action.payload);
+        if (action.type === 'START_LEVEL') startLevel(action.payload.level, action.payload.block, action.payload.grid, action.payload.placements);
+    }, [setView, startLevel]);
     const [selectedBlockIndex, setSelectedBlockIndex] = useState<number | null>(null);
 
     const getBlockProgress = (levelRange: [number, number]) => {

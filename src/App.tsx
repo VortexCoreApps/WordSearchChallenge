@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GameProvider, useGame } from './store/GameContext';
+import { useGameStore } from './store/useGameStore';
 import MenuScreen from '@/screens/MenuScreen';
 import GameScreen from '@/screens/GameScreen';
 import CompleteScreen from '@/screens/CompleteScreen';
@@ -28,8 +28,12 @@ const transition = {
 
 import AchievementToast from '@/components/ui/AchievementToast';
 
-const AppContent: React.FC = () => {
-    const { state, progress, dispatch } = useGame();
+const App: React.FC = () => {
+    const view = useGameStore(state => state.view);
+    const progress = useGameStore(state => state.progress);
+    const isPaused = useGameStore(state => state.isPaused);
+    const setView = useGameStore(state => state.setView);
+    const pauseGame = useGameStore(state => state.pauseGame);
 
     // 0. Initialize AdMob and IAPService ONLY ONCE on mount
     React.useEffect(() => {
@@ -48,21 +52,26 @@ const AppContent: React.FC = () => {
         });
     }, []);
 
-    // Use refs to avoid re-creating listeners on every state change
-    const stateRef = React.useRef(state);
-    React.useEffect(() => { stateRef.current = state; }, [state]);
+    // Local refs for native listeners to avoid stale closures
+    const currentViewRef = React.useRef(view);
+    const isPausedRef = React.useRef(isPaused);
+
+    useEffect(() => {
+        currentViewRef.current = view;
+        isPausedRef.current = isPaused;
+    }, [view, isPaused]);
 
     React.useEffect(() => {
-        // 1. Web Visibility / Focus Logic (uses refs for stable closures)
+        // 1. Web Visibility / Focus Logic
         const handleVisibilityChange = () => {
-            if (document.hidden && stateRef.current.view === 'game') {
-                dispatch({ type: 'PAUSE_GAME' });
+            if (document.hidden && currentViewRef.current === 'game') {
+                pauseGame();
             }
         };
 
         const handleBlur = () => {
-            if (stateRef.current.view === 'game') {
-                dispatch({ type: 'PAUSE_GAME' });
+            if (currentViewRef.current === 'game') {
+                pauseGame();
             }
         };
 
@@ -71,33 +80,32 @@ const AppContent: React.FC = () => {
             try {
                 // Pause when backgrounded
                 const stateListener = await CapApp.addListener('appStateChange', ({ isActive }) => {
-                    if (!isActive && stateRef.current.view === 'game') {
-                        dispatch({ type: 'PAUSE_GAME' });
+                    if (!isActive && currentViewRef.current === 'game') {
+                        pauseGame();
                     }
                 });
 
                 // Handle Hardware Back Button
                 const backListener = await CapApp.addListener('backButton', () => {
-                    const currentView = stateRef.current.view;
-                    const isPaused = stateRef.current.isPaused;
+                    const currentView = currentViewRef.current;
+                    const isPaused = isPausedRef.current;
 
                     if (currentView === 'menu' || currentView === 'onboarding' || currentView === 'splash') {
                         CapApp.exitApp();
                     } else if (currentView === 'game') {
                         if (isPaused) {
-                            dispatch({ type: 'SET_VIEW', payload: 'menu' });
+                            setView('menu');
                         } else {
-                            dispatch({ type: 'PAUSE_GAME' });
+                            pauseGame();
                         }
                     } else {
-                        // All other sub-screens go back to menu
-                        dispatch({ type: 'SET_VIEW', payload: 'menu' });
+                        setView('menu');
                     }
                 });
 
                 return { stateListener, backListener };
             } catch (error) {
-                console.warn('Capacitor App plugin not available, falling back to Web API');
+                console.warn('Capacitor App plugin not available');
                 return null;
             }
         };
@@ -115,26 +123,26 @@ const AppContent: React.FC = () => {
                 listeners.backListener.remove();
             }
         };
-    }, [dispatch]); // Only depends on dispatch (stable)
+    }, []); // Only setup once
 
     React.useEffect(() => {
-        if (state.view === 'splash') {
+        if (view === 'splash') {
             const timer = setTimeout(() => {
                 if (!progress.hasSeenTutorial) {
-                    dispatch({ type: 'SET_VIEW', payload: 'onboarding' });
+                    setView('onboarding');
                 } else {
-                    dispatch({ type: 'SET_VIEW', payload: 'menu' });
+                    setView('menu');
                 }
             }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [state.view, progress.hasSeenTutorial, dispatch]);
+    }, [view, progress.hasSeenTutorial]);
 
     return (
         <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select">
             <AnimatePresence mode="wait">
                 <motion.div
-                    key={state.view}
+                    key={view}
                     variants={screenVariants}
                     initial="initial"
                     animate="animate"
@@ -142,14 +150,14 @@ const AppContent: React.FC = () => {
                     transition={transition}
                     className="absolute inset-0 w-full h-full overflow-y-auto hide-scrollbar pt-[calc(var(--safe-top)+12px)] pb-[var(--safe-bottom)] pl-[var(--safe-left)] pr-[var(--safe-right)]"
                 >
-                    {state.view === 'splash' && <SplashScreen />}
-                    {state.view === 'menu' && <MenuScreen />}
-                    {state.view === 'game' && <GameScreen />}
-                    {state.view === 'complete' && <CompleteScreen />}
-                    {state.view === 'album' && <TrophyAlbum />}
-                    {state.view === 'onboarding' && <OnboardingScreen />}
-                    {state.view === 'settings' && <SettingsScreen />}
-                    {state.view === 'levels' && <LevelSelection />}
+                    {view === 'splash' && <SplashScreen />}
+                    {view === 'menu' && <MenuScreen />}
+                    {view === 'game' && <GameScreen />}
+                    {view === 'complete' && <CompleteScreen />}
+                    {view === 'album' && <TrophyAlbum />}
+                    {view === 'onboarding' && <OnboardingScreen />}
+                    {view === 'settings' && <SettingsScreen />}
+                    {view === 'levels' && <LevelSelection />}
                 </motion.div>
             </AnimatePresence>
 
@@ -158,11 +166,5 @@ const AppContent: React.FC = () => {
         </div>
     );
 };
-
-const App: React.FC = () => (
-    <GameProvider>
-        <AppContent />
-    </GameProvider>
-);
 
 export default App;

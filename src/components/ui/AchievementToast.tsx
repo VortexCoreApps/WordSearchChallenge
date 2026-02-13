@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Star, Search, Target, Crown, Play, Trophy, Sparkles, Shield, Gem, Zap, Timer, Flame, Calendar, CalendarCheck, Coins, Wallet } from 'lucide-react';
 import { Achievement } from '@/utils/achievements';
-import { useGame } from '@/store/GameContext';
+import { useGameStore } from '@/store/useGameStore';
 import { t } from '@/utils/i18n';
 
 const AchievementIcons: Record<string, any> = {
@@ -11,17 +11,17 @@ const AchievementIcons: Record<string, any> = {
 };
 
 const AchievementToast: React.FC = () => {
-    const { state, dispatch } = useGame();
-    const achievement = state.newAchievement as Achievement | null;
+    const achievement = useGameStore(state => state.newAchievement) as Achievement | null;
+    const closeAchievement = useGameStore(state => state.closeAchievement);
 
     useEffect(() => {
         if (achievement) {
             const timer = setTimeout(() => {
-                dispatch({ type: 'CLOSE_ACHIEVEMENT' });
+                closeAchievement();
             }, 4000);
             return () => clearTimeout(timer);
         }
-    }, [achievement, dispatch]);
+    }, [achievement, closeAchievement]);
 
     return (
         <AnimatePresence>

@@ -1,19 +1,19 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useGame } from '@/store/GameContext';
+import { useGameStore } from '@/store/useGameStore';
 import { t } from '@/utils/i18n';
 import { Search, Star, Zap, Coins, ArrowRight, Check, Trophy, MousePointer2, Sparkles, Video } from 'lucide-react';
 
 const OnboardingScreen: React.FC = () => {
     const [currentStep, setCurrentStep] = useState(0);
-    const { dispatch } = useGame();
+    const finishTutorial = useGameStore(state => state.finishTutorial);
 
     const handleNext = () => {
         if (currentStep < 4) {
             setCurrentStep(prev => prev + 1);
         } else {
-            dispatch({ type: 'FINISH_TUTORIAL' });
+            finishTutorial();
         }
     };
 
