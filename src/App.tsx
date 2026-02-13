@@ -12,6 +12,7 @@ import LevelSelection from '@/screens/LevelSelection';
 import SettingsScreen from '@/screens/SettingsScreen';
 import { adMobService } from '@/services/adMobService';
 import { iapService, IAP_PRODUCTS } from '@/services/IAPService';
+import { migrateLocalStorageToPreferences } from '@/utils/capacitorStorage';
 import { App as CapApp } from '@capacitor/app';
 
 const screenVariants = {
@@ -34,8 +35,11 @@ const App: React.FC = () => {
     const setView = useGameStore(state => state.setView);
     const pauseGame = useGameStore(state => state.pauseGame);
 
-    // 0. Initialize AdMob and IAPService ONLY ONCE on mount
+    // 0. Initialize services and migrate data ONLY ONCE on mount
     React.useEffect(() => {
+        // Migrate existing localStorage data to Capacitor Preferences (one-time)
+        migrateLocalStorageToPreferences('ws_challenge_pro_storage');
+
         adMobService.initialize();
 
         iapService.initialize().then(() => {
@@ -139,7 +143,7 @@ const App: React.FC = () => {
 
     return (
         <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select">
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
                 <motion.div
                     key={view}
                     variants={screenVariants}

@@ -1,6 +1,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { capacitorStorage } from '../utils/capacitorStorage';
 import {
     GameState,
     UserProgress,
@@ -386,13 +387,17 @@ export const useGameStore = create<GameStore>()(
 
             resetProgress: () => {
                 localStorage.removeItem('ws_challenge_pro_storage');
+                import('../utils/capacitorStorage').then(({ capacitorStorage }) => {
+                    capacitorStorage.removeItem('ws_challenge_pro_storage');
+                });
                 window.location.reload();
             }
         }),
         {
             name: 'ws_challenge_pro_storage',
-            storage: createJSONStorage(() => localStorage),
+            storage: createJSONStorage(() => capacitorStorage),
             partialize: (state) => ({ progress: state.progress }),
+            version: 1,
         }
     )
 );
