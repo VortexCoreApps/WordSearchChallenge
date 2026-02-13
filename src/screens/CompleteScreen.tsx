@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Trophy, ArrowRight, Home, Sparkles } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { useGameStore } from '@/store/useGameStore';
 import { formatTime } from '@/utils/gameUtils';
 import { t } from '@/utils/i18n';
@@ -30,26 +29,7 @@ const CompleteScreen: React.FC = () => {
     const stars = progress.stars[state.currentLevel?.id || 0] || 0;
 
     useEffect(() => {
-        try {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#0f172a', '#fde047', '#fda4af', '#67e8f9']
-            });
-        } catch (e) {
-            console.warn('Confetti failed to fire:', e);
-        }
-
         hapticService.celebration();
-
-        return () => {
-            try {
-                confetti.reset();
-            } catch (e) {
-                // Silently ignore cleanup errors
-            }
-        };
     }, []);
 
     const containerVariants = {
