@@ -17,31 +17,42 @@ class SeededRNG {
 
 export function generateGrid(size: number, words: string[], seed?: number): { grid: GridCell[][], placements: Record<string, { row: number, col: number }[]> } {
     const MAX_RETRIES = 100;
+    const startTime = Date.now();
 
     for (let retry = 0; retry < MAX_RETRIES; retry++) {
-        // Deterministic variation of seed for each retry
-        // If seed is defined, we use it + offset. If not, random.
+        // Safety bail-out for very slow devices
+        if (retry > 50 && Date.now() - startTime > 1000) {
+            console.warn("Grid generation taking too long, bailing early");
+            break;
+        }
+
         const effectiveSeed = seed !== undefined ? seed + (retry * 7919) : Math.random() * 10000;
         const rng = new SeededRNG(effectiveSeed);
 
-        const grid: GridCell[][] = Array(size).fill(null).map((_, r) =>
-            Array(size).fill(null).map((_, c) => ({ letter: '', row: r, col: c }))
-        );
+        // Pre-allocate grid more efficiently
+        const grid: GridCell[][] = [];
+        for (let r = 0; r < size; r++) {
+            const row: GridCell[] = [];
+            for (let c = 0; c < size; c++) {
+                row.push({ letter: '', row: r, col: c });
+            }
+            grid.push(row);
+        }
 
         const placements: Record<string, { row: number, col: number }[]> = {};
         const directions = [
             [0, 1], [1, 0], [1, 1], [-1, 1], [0, -1], [-1, 0], [-1, -1], [1, -1]
         ];
 
-        // Sort words by length descending to place largest first (heuristic)
         const sortedWords = [...words].sort((a, b) => b.length - a.length);
         let allWordsPlaced = true;
 
         for (const word of sortedWords) {
             let placed = false;
             let attempts = 0;
-            // Try to place this specific word
-            while (!placed && attempts < 150) {
+            const maxWordAttempts = size > 6 ? 150 : 80; // Scale attempts based on size
+
+            while (!placed && attempts < maxWordAttempts) {
                 const dir = directions[Math.floor(rng.next() * directions.length)];
                 const r = Math.floor(rng.next() * size);
                 const col = Math.floor(rng.next() * size);
@@ -56,12 +67,11 @@ export function generateGrid(size: number, words: string[], seed?: number): { gr
 
             if (!placed) {
                 allWordsPlaced = false;
-                break; // Give up on this grid configuration
+                break;
             }
         }
 
         if (allWordsPlaced) {
-            // Fill empty cells
             const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             for (let r = 0; r < size; r++) {
                 for (let c = 0; c < size; c++) {
@@ -74,9 +84,6 @@ export function generateGrid(size: number, words: string[], seed?: number): { gr
         }
     }
 
-    // Fallback (should theoretically not happen with enough retries unless inputs are invalid)
-    console.warn("Failed to generate valid grid after max retries");
-    // Return empty grid to avoid crash, but game will be playable-ish or broken
     return {
         grid: Array(size).fill(null).map((_, r) => Array(size).fill(null).map((_, c) => ({ letter: '', row: r, col: c }))),
         placements: {}

@@ -28,15 +28,29 @@ const CompleteScreen: React.FC = () => {
 
     const [showingAdWarning, setShowingAdWarning] = React.useState(false);
     const stars = progress.stars[state.currentLevel?.id || 0] || 0;
+    const confettiCanvasRef = React.useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        confetti({
+        if (!confettiCanvasRef.current) return;
+
+        const myConfetti = confetti.create(confettiCanvasRef.current, {
+            resize: true,
+            useWorker: true,
+            disableForReducedMotion: true
+        });
+
+        myConfetti({
             particleCount: 150,
             spread: 70,
             origin: { y: 0.6 },
             colors: ['#0f172a', '#fde047', '#fda4af', '#67e8f9']
         });
+
         hapticService.celebration(); // Haptic celebration for level complete
+
+        return () => {
+            myConfetti.reset();
+        };
     }, []);
 
     const containerVariants = {
@@ -61,6 +75,10 @@ const CompleteScreen: React.FC = () => {
             className="h-full bg-[var(--color-background)] flex flex-col items-center justify-center p-6 pb-24 text-center max-w-lg mx-auto relative"
             style={{ fontFamily: "'Outfit', sans-serif" }}
         >
+            <canvas
+                ref={confettiCanvasRef}
+                className="fixed inset-0 w-full h-full pointer-events-none z-[60]"
+            />
             <motion.div
                 variants={itemVariants}
                 className="w-24 h-24 bg-[var(--color-ink)] rounded-[2rem] flex items-center justify-center mb-8 rotate-3 border-4 border-[var(--color-ink)] shadow-[8px_8px_0px_0px_var(--shadow-light)]"
@@ -122,7 +140,7 @@ const CompleteScreen: React.FC = () => {
                         }
 
                         // Mandatory stabilization delay to prevent race conditions and UI lockups during level transition
-                        await new Promise(resolve => setTimeout(resolve, 150));
+                        await new Promise(resolve => setTimeout(resolve, 300));
                         dispatch({ type: 'START_CURRENT_LEVEL' });
                     }}
                     className="w-full bg-[var(--color-ink)] text-[var(--color-paper)] py-5 rounded-[2.5rem] border-4 border-[var(--color-ink)] flex items-center justify-center space-x-4 shadow-[8px_8px_0px_0px_var(--shadow-light)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all"

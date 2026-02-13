@@ -21,9 +21,8 @@ const screenVariants = {
 };
 
 const transition = {
-    type: "spring" as const,
-    stiffness: 300,
-    damping: 30
+    duration: 0.3,
+    ease: "easeInOut" as const
 };
 
 import AchievementToast from '@/components/ui/AchievementToast';
@@ -140,7 +139,7 @@ const App: React.FC = () => {
 
     return (
         <div className="relative h-full w-full bg-[var(--color-background)] text-[var(--color-text-primary)] font-sans selection:bg-[#fde047] overflow-hidden no-select">
-            <AnimatePresence mode="wait">
+            <AnimatePresence>
                 <motion.div
                     key={view}
                     variants={screenVariants}
