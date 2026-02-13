@@ -106,7 +106,7 @@ const CompleteScreen: React.FC = () => {
             </motion.div>
 
             <motion.div variants={itemVariants} className="grid grid-cols-2 gap-6 w-full mb-12">
-                <div className="bg-[var(--color-surface)] border-4 border-[var(--color-ink)] p-6 rounded-[2.5rem] shadow-[8px_8px_0px_0px_var(--shadow-color)]">
+                <div className="bg-[var(--color-surface)] border-4 border-[var(--color-ink)] p-6 rounded-[2.5rem] shadow-[8px_8px_0px_0px_var(--shadow-color)] flex flex-col items-center justify-center text-center">
                     <p className="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-widest mb-1">{t('time')}</p>
                     <p className="text-2xl font-black text-[var(--color-text-primary)] tabular-nums">{formatTime(state.timeElapsed)}</p>
                 </div>

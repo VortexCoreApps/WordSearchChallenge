@@ -41,15 +41,15 @@ const MenuScreen: React.FC = () => {
 
     // Generate stable background letters using seeded random
     const backgroundLetters = useMemo(() => {
-        return Array.from({ length: 200 }).map((_, i) =>
+        return Array.from({ length: 500 }).map((_, i) =>
             String.fromCharCode(65 + Math.floor(seededRandom(i * 123.456) * 26))
         );
     }, []);
 
     return (
-        <div className="h-full flex flex-col items-center justify-start max-w-lg mx-auto bg-[var(--color-background)] overflow-y-auto relative font-sans p-8 pb-40">
+        <div className="h-full flex flex-col items-center justify-start max-w-lg mx-auto bg-[var(--color-background)] overflow-hidden relative font-sans px-4 pt-4 pb-20">
             {/* Thematic Background: Letter Grid Pattern */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none flex flex-wrap content-start p-4">
+            <div className="absolute inset-0 pointer-events-none opacity-[0.04] select-none flex flex-wrap content-start overflow-hidden">
                 {backgroundLetters.map((letter, i) => (
                     <span key={i} className="w-8 h-8 flex items-center justify-center font-black text-xs text-[var(--color-ink)]">
                         {letter}
@@ -57,19 +57,19 @@ const MenuScreen: React.FC = () => {
                 ))}
             </div>
 
-            <header className="flex flex-col items-center mt-8 mb-8 w-full z-10">
+            <header className="flex flex-col items-center mt-2 mb-3 w-full z-10">
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="mb-4 relative"
+                    className="mb-2 relative"
                 >
-                    <div className="w-20 h-20 bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-3xl flex items-center justify-center shadow-[8px_8px_0px_0px_var(--shadow-color)] rotate-[-6deg] relative overflow-hidden">
-                        <span className="text-4xl font-black text-[var(--color-ink)] italic">W</span>
+                    <div className="w-16 h-16 bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-3xl flex items-center justify-center shadow-[6px_6px_0px_0px_var(--shadow-color)] rotate-[-6deg] relative overflow-hidden">
+                        <span className="text-3xl font-black text-[var(--color-ink)] italic">W</span>
                     </div>
                 </motion.div>
 
                 {/* Floating Settings Button in Header Area */}
-                <div className="absolute top-8 right-8 z-20">
+                <div className="absolute top-2 right-4 z-20">
                     <motion.button
                         whileTap={{ scale: 0.9, rotate: 90 }}
                         onClick={() => dispatch({ type: 'SET_VIEW', payload: 'settings' })}
@@ -84,14 +84,14 @@ const MenuScreen: React.FC = () => {
                         animate={{ width: '100%' }}
                         className="absolute bottom-1 left-0 h-4 bg-[#fde047] opacity-60 z-0"
                     />
-                    <h1 className="text-4xl font-black text-[var(--color-text-primary)] uppercase italic tracking-tighter text-center leading-none relative z-10">
+                    <h1 className="text-3xl font-black text-[var(--color-text-primary)] uppercase italic tracking-tighter text-center leading-none relative z-10">
                         {t('appTitle')}<br />
-                        <span className="text-xl tracking-[0.2em] font-black text-[var(--color-text-secondary)] not-italic block mt-1">{t('appSubtitle')}</span>
+                        <span className="text-base tracking-[0.2em] font-black text-[var(--color-text-secondary)] not-italic block mt-0.5">{t('appSubtitle')}</span>
                     </h1>
                 </div>
             </header>
 
-            <div className="w-full flex flex-col gap-8 flex-1 justify-center max-w-[340px] z-10">
+            <div className="w-full flex flex-col flex-1 justify-evenly max-w-[340px] z-10">
                 {/* Word Discovery Stats */}
                 <div className="flex justify-center space-x-4">
                     <div className="relative group">
@@ -134,21 +134,21 @@ const MenuScreen: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => dispatch({ type: 'START_CURRENT_LEVEL' })}
-                    className="w-full bg-[var(--color-surface)] border-4 border-[var(--color-ink)] p-8 rounded-[2.5rem] flex flex-col items-center justify-center relative shadow-[12px_12px_0px_0px_var(--shadow-color)] group"
+                    className="w-full bg-[var(--color-surface)] border-4 border-[var(--color-ink)] p-5 rounded-[2rem] flex flex-col items-center justify-center relative shadow-[8px_8px_0px_0px_var(--shadow-color)] group"
                 >
                     {/* Highlighter Marks decoration */}
                     <div className="absolute top-6 left-8 w-24 h-6 bg-[#34d399] opacity-20 rounded-full -rotate-12 blur-sm" />
                     <div className="absolute bottom-10 right-10 w-32 h-8 bg-[#38bdf8] opacity-20 rounded-full rotate-6 blur-sm" />
 
-                    <div className="w-16 h-16 bg-[var(--color-ink)] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <Play className="w-8 h-8 text-[var(--color-paper)] fill-[var(--color-paper)] ml-1" />
+                    <div className="w-12 h-12 bg-[var(--color-ink)] rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <Play className="w-6 h-6 text-[var(--color-paper)] fill-[var(--color-paper)] ml-0.5" />
                     </div>
 
                     <div className="relative px-4">
                         <div className="absolute -inset-1 bg-[#fde047] opacity-60 rounded-lg -rotate-1" />
-                        <h3 className="text-2xl font-black uppercase italic tracking-tighter relative z-10 text-[var(--color-text-primary)]">{t('levelLabel')} {progress.currentLevelId}</h3>
+                        <h3 className="text-xl font-black uppercase italic tracking-tighter relative z-10 text-[var(--color-text-primary)]">{t('levelLabel')} {progress.currentLevelId}</h3>
                     </div>
-                    <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-[0.4em] mt-3">{t('readyToFind')}</p>
+                    <p className="text-[10px] font-bold text-[var(--color-text-muted)] uppercase tracking-[0.4em] mt-2">{t('readyToFind')}</p>
                 </motion.button>
 
                 {/* Secondary Actions */}
@@ -212,7 +212,7 @@ const MenuScreen: React.FC = () => {
                         onClick={async () => {
                             setShowRemoveAdsModal(true);
                         }}
-                        className="w-full bg-[#fde047] border-3 border-[#0f172a] p-4 rounded-2xl flex items-center justify-between shadow-[6px_6px_0px_0px_rgba(15,23,42,1)] group mt-4"
+                        className="w-full bg-[#fde047] border-3 border-[#0f172a] p-3 rounded-2xl flex items-center justify-between shadow-[4px_4px_0px_0px_rgba(15,23,42,1)] group"
                     >
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-white border-2 border-[#0f172a] rounded-xl flex items-center justify-center">

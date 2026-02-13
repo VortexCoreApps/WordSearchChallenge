@@ -94,7 +94,7 @@ const GameScreen: React.FC = () => {
     }, [currentLevel.id]);
 
     return (
-        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-20 touch-none max-w-lg mx-auto overflow-hidden relative">
+        <div className="h-full bg-[var(--color-background)] flex flex-col p-4 pb-16 touch-none max-w-lg mx-auto overflow-hidden relative">
             {/* World-themed ambient background — fixed to fill entire viewport */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
                 {/* Top-right glow */}
@@ -141,7 +141,7 @@ const GameScreen: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            <header className="grid grid-cols-[1fr_2fr_1fr] items-center mb-6 mt-6 px-2">
+            <header className="grid grid-cols-[1fr_2fr_1fr] items-center mb-2 mt-2 px-2">
                 <div className="flex justify-start">
                     <button
                         onClick={() => dispatch({ type: 'SET_VIEW', payload: 'menu' })}
@@ -166,29 +166,29 @@ const GameScreen: React.FC = () => {
                 </div>
             </header>
 
-            <div className="flex items-center justify-center space-x-12 mb-4">
+            <div className="flex items-center justify-center space-x-12 mb-2">
                 <TimerDisplay time={timeElapsed} />
                 <div className="w-px h-6 bg-[var(--color-border)]" />
                 <ProgressDisplay found={foundCount} total={wordsInfo.length} />
             </div>
 
-            <main className="flex-1 min-h-0 flex flex-col items-center justify-center gap-y-2 sm:gap-y-4">
+            <main className="flex-1 min-h-0 flex flex-col items-center justify-center gap-y-1">
                 <motion.div
                     animate={{ rotate: boardRotation }}
                     transition={{ type: "spring", stiffness: 260, damping: 26 }}
-                    className="w-full max-w-[360px] flex justify-center"
+                    className="w-full max-w-[360px] flex justify-center flex-shrink-0"
                 >
                     <WordSearchGrid
                         onWordFound={handleWordFound}
                         rotation={boardRotation}
                     />
                 </motion.div>
-                <div className="w-full flex flex-col items-center mb-4 sm:mb-8">
+                <div className="w-full flex flex-col items-center flex-shrink-0">
                     <WordList words={wordsInfo} category={currentLevel.title} />
                 </div>
             </main>
 
-            <footer className="mt-auto py-4 flex items-center justify-center space-x-6 relative">
+            <footer className="mt-auto py-2 flex items-center justify-center space-x-6 relative flex-shrink-0">
                 <motion.button
                     whileTap={{ scale: 0.9 }}
                     onClick={() => dispatch({ type: 'TOGGLE_PAUSE' })}

@@ -26,22 +26,36 @@ const WordSearchGridCanvas: React.FC<Props> = ({ onWordFound, rotation = 0 }) =>
     const [activeCells, setActiveCells] = useState<{ row: number, col: number }[]>([]);
     const [selectionColor, setSelectionColor] = useState<string>('#fde047');
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+    const [maxHeight, setMaxHeight] = useState(0);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const stageRef = useRef<Konva.Stage>(null);
 
-    // Track size for responsiveness
+    // Track size for responsiveness — use min(width, parentAvailableHeight) for the square
     useEffect(() => {
         const updateSize = () => {
             if (containerRef.current) {
                 const { width } = containerRef.current.getBoundingClientRect();
-                setContainerSize({ width, height: width });
+                // Get the parent (main area) available height
+                const parent = containerRef.current.closest('main');
+                const availableHeight = parent
+                    ? parent.getBoundingClientRect().height
+                    : window.innerHeight * 0.5;
+                // The grid square should fit in both dimensions
+                const sideLen = Math.min(width, availableHeight * 0.85);
+                setContainerSize({ width: sideLen, height: sideLen });
+                setMaxHeight(availableHeight);
             }
         };
         updateSize();
         window.addEventListener('resize', updateSize);
-        return () => window.removeEventListener('resize', updateSize);
-    }, []);
+        // Also measure after a brief delay for layout settling
+        const raf = requestAnimationFrame(updateSize);
+        return () => {
+            window.removeEventListener('resize', updateSize);
+            cancelAnimationFrame(raf);
+        };
+    }, [grid.length]);
 
     const stageSize = containerSize.width > 0 ? containerSize.width - 24 : 0; // border(4+4) + padding(8+8)
     const gridSize = grid.length;
@@ -130,7 +144,13 @@ const WordSearchGridCanvas: React.FC<Props> = ({ onWordFound, rotation = 0 }) =>
     return (
         <div
             ref={containerRef}
-            className="relative w-full max-w-[min(95vw,480px)] aspect-square mx-auto bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-2xl p-2 shadow-[8px_8px_0px_0px_var(--shadow-color)] overflow-hidden flex items-center justify-center"
+            className="relative mx-auto bg-[var(--color-surface)] border-4 border-[var(--color-ink)] rounded-2xl p-2 shadow-[8px_8px_0px_0px_var(--shadow-color)] overflow-hidden flex items-center justify-center"
+            style={{
+                width: containerSize.width > 0 ? containerSize.width : '100%',
+                height: containerSize.height > 0 ? containerSize.height : 'auto',
+                maxWidth: 'min(95vw, 480px)',
+                aspectRatio: containerSize.width > 0 ? undefined : '1 / 1'
+            }}
         >
             {containerSize.width > 0 && (
                 <Stage
