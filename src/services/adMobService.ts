@@ -42,7 +42,7 @@ class AdMobService {
 
         try {
             await AdMob.initialize({
-                initializeForTesting: true,
+                initializeForTesting: false,
                 // Registrado vía Consola de AdMob (Test Devices)
             });
 
@@ -123,7 +123,7 @@ class AdMobService {
             this.isInterstitialLoading = true;
             const options: AdOptions = {
                 adId: AD_UNITS.INTERSTITIAL,
-                isTesting: true
+                isTesting: false
             };
             await AdMob.prepareInterstitial(options);
         } catch (e) {
@@ -144,7 +144,7 @@ class AdMobService {
             this.isRewardedLoading = true;
             const options: RewardAdOptions = {
                 adId: AD_UNITS.REWARDED,
-                isTesting: true
+                isTesting: false
             };
             await AdMob.prepareRewardVideoAd(options);
         } catch (e) {
@@ -203,7 +203,7 @@ class AdMobService {
                 adSize: BannerAdSize.ADAPTIVE_BANNER,
                 position: BannerAdPosition.BOTTOM_CENTER,
                 margin: 0,
-                isTesting: true,
+                isTesting: false,
                 npa: true
             };
             await AdMob.showBanner(options);
@@ -270,7 +270,7 @@ class AdMobService {
                 if (!this.isRewardedPrepared) {
                     const options: RewardAdOptions = {
                         adId: AD_UNITS.REWARDED,
-                        isTesting: true
+                        isTesting: false
                     };
                     await AdMob.prepareRewardVideoAd(options);
                 }
