@@ -36,29 +36,34 @@ public class MainActivity extends BridgeActivity {
             try {
                 WebView webView = getBridge().getWebView();
                 if (webView != null) {
-                    // Pass 1: Force layout and invalidate
+                    // Pass 1: Force layout recalculation
                     webView.requestLayout();
                     webView.invalidate();
 
-                    // Pass 2: Toggle visibility with a small delay
-                    // This often forces the native GL surface to reattach
-                    webView.setVisibility(View.INVISIBLE);
-                    webView.postDelayed(() -> {
-                        webView.setVisibility(View.VISIBLE);
-                        webView.requestLayout(); // second pass
+                    // Pass 2: Gentle resize trick — nudge the view by 1px and back
+                    // This forces the GPU surface to reattach without any visible flash
+                    android.view.ViewGroup.LayoutParams lp = webView.getLayoutParams();
+                    if (lp != null) {
+                        int originalHeight = lp.height;
+                        lp.height = lp.height == android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                                ? android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                                : lp.height;
+                        webView.setLayoutParams(lp);
+                        webView.postDelayed(() -> {
+                            lp.height = originalHeight;
+                            webView.setLayoutParams(lp);
+                        }, 16); // 1 frame
+                    }
 
-                        // Pass 3: Force a DOM reflow via JavaScript
-                        // We also scroll 1px and back to trigger browser-level composite pass
+                    // Pass 3: Force a DOM recomposite via JavaScript WITHOUT hiding body
+                    webView.postDelayed(() -> {
                         webView.evaluateJavascript(
                                 "(function(){" +
-                                        "  var b = document.body;" +
-                                        "  if(b) {" +
-                                        "    var oldPos = window.scrollY;" +
-                                        "    b.style.display = 'none';" +
-                                        "    void b.offsetHeight;" + // force reflow
-                                        "    b.style.display = '';" +
-                                        "    window.scrollTo(0, oldPos + 1);" +
-                                        "    window.scrollTo(0, oldPos);" +
+                                        "  var r = document.getElementById('root');" +
+                                        "  if(r) {" +
+                                        "    r.style.transform = 'translateZ(0)';" +
+                                        "    void r.offsetHeight;" +
+                                        "    r.style.transform = '';" +
                                         "  }" +
                                         "})()",
                                 null);
@@ -67,7 +72,7 @@ public class MainActivity extends BridgeActivity {
             } catch (Exception e) {
                 // Silently ignore
             }
-        }, 300); // 300ms delay to allow the OS to finish the window transition
+        }, 100); // Reduced delay — 100ms is enough after OS transition
     }
 
     @Override

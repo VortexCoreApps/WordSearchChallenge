@@ -48,16 +48,20 @@ const AppContent: React.FC = () => {
         });
     }, []);
 
+    // Use refs to avoid re-creating listeners on every state change
+    const stateRef = React.useRef(state);
+    React.useEffect(() => { stateRef.current = state; }, [state]);
+
     React.useEffect(() => {
-        // 1. Web Visibility / Focus Logic
+        // 1. Web Visibility / Focus Logic (uses refs for stable closures)
         const handleVisibilityChange = () => {
-            if (document.hidden && state.view === 'game') {
+            if (document.hidden && stateRef.current.view === 'game') {
                 dispatch({ type: 'PAUSE_GAME' });
             }
         };
 
         const handleBlur = () => {
-            if (state.view === 'game') {
+            if (stateRef.current.view === 'game') {
                 dispatch({ type: 'PAUSE_GAME' });
             }
         };
@@ -67,17 +71,20 @@ const AppContent: React.FC = () => {
             try {
                 // Pause when backgrounded
                 const stateListener = await CapApp.addListener('appStateChange', ({ isActive }) => {
-                    if (!isActive && state.view === 'game') {
+                    if (!isActive && stateRef.current.view === 'game') {
                         dispatch({ type: 'PAUSE_GAME' });
                     }
                 });
 
                 // Handle Hardware Back Button
                 const backListener = await CapApp.addListener('backButton', () => {
-                    if (state.view === 'menu' || state.view === 'onboarding' || state.view === 'splash') {
+                    const currentView = stateRef.current.view;
+                    const isPaused = stateRef.current.isPaused;
+
+                    if (currentView === 'menu' || currentView === 'onboarding' || currentView === 'splash') {
                         CapApp.exitApp();
-                    } else if (state.view === 'game') {
-                        if (state.isPaused) {
+                    } else if (currentView === 'game') {
+                        if (isPaused) {
                             dispatch({ type: 'SET_VIEW', payload: 'menu' });
                         } else {
                             dispatch({ type: 'PAUSE_GAME' });
@@ -108,7 +115,7 @@ const AppContent: React.FC = () => {
                 listeners.backListener.remove();
             }
         };
-    }, [state.view, state.isPaused, dispatch]);
+    }, [dispatch]); // Only depends on dispatch (stable)
 
     React.useEffect(() => {
         if (state.view === 'splash') {

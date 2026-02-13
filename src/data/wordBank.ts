@@ -2,7 +2,17 @@
  * Bilingual Word Bank (English + Spanish)
  * 
  * Words are organized by category and language.
+ * Each category has ~100+ words with balanced distribution across lengths (3-8 letters).
  * Spanish words do NOT include accents to work with the A-Z grid.
+ * All words are max 8 letters (gridSize max = 8).
+ * 
+ * Minimum targets per category per length range:
+ *   3-letter: 12+   (Easy gridSize 4)
+ *   4-letter: 20+   (Easy gridSize 4)
+ *   5-letter: 20+   (Medium gridSize 5)
+ *   6-letter: 15+   (Hard gridSize 6)
+ *   7-letter: 12+   (Expert gridSize 8)
+ *   8-letter: 10+   (Expert gridSize 8)
  */
 
 export type SupportedLanguage = 'en' | 'es';
@@ -15,146 +25,269 @@ export interface BilingualWordBank {
 export const WORD_BANK: BilingualWordBank = {
     en: {
         nature: [
-            'TREE', 'LEAF', 'ROOT', 'BARK', 'STEM', 'SEED', 'MOSS', 'FERN', 'IVY', 'BUSH',
-            'VINE', 'PALM', 'PINE', 'OAK', 'POND', 'LAKE', 'WAVE', 'TIDE', 'REEF', 'COVE',
-            'CLIFF', 'PEAK', 'HILL', 'VALE', 'GLEN', 'ROCK', 'SAND', 'MUD', 'SOIL', 'CLAY',
-            'RAIN', 'SNOW', 'HAIL', 'MIST', 'DEW', 'FOG', 'WIND', 'GALE', 'SUN', 'MOON',
-            'STAR', 'SKY', 'DUSK', 'DAWN', 'NOON', 'FOAM', 'BROOK', 'CREEK', 'STREAM', 'RIVER'
+            'IVY', 'OAK', 'MUD', 'DEW', 'FOG', 'SUN', 'SKY', 'BAY', 'BOG', 'BUD', 'ELM', 'FIR', 'GUM', 'HAY', 'HOP',
+            'TREE', 'LEAF', 'ROOT', 'BARK', 'STEM', 'SEED', 'MOSS', 'FERN', 'BUSH', 'VINE', 'PALM', 'PINE', 'POND', 'LAKE',
+            'WAVE', 'TIDE', 'REEF', 'COVE', 'PEAK', 'HILL', 'VALE', 'GLEN', 'ROCK', 'SAND', 'SOIL', 'CLAY', 'RAIN', 'SNOW',
+            'HAIL', 'MIST', 'WIND', 'GALE', 'MOON', 'STAR', 'DUSK', 'DAWN', 'NOON', 'FOAM', 'WEED', 'TWIG', 'CRAG', 'DELL',
+            'CLIFF', 'BROOK', 'CREEK', 'MARSH', 'FIELD', 'GROVE', 'HEDGE', 'FROST', 'FLOOD', 'SLOPE', 'TRAIL',
+            'PETAL', 'BLOOM', 'SHORE', 'BEACH', 'OCEAN', 'BRUSH', 'CEDAR', 'BIRCH', 'MAPLE', 'WHEAT', 'PLAIN', 'RIDGE',
+            'STREAM', 'FOREST', 'DESERT', 'CANYON', 'ISLAND', 'MEADOW', 'FLOWER', 'BRANCH', 'PEBBLE', 'BREEZE',
+            'VALLEY', 'JUNGLE', 'GARDEN', 'LAGOON', 'TUNDRA', 'LICHEN', 'SPROUT', 'CANOPY',
+            'GLACIER', 'BLOSSOM', 'CASCADE', 'CURRENT', 'TERRACE', 'PLATEAU', 'THICKET', 'ORCHARD', 'PASTURE', 'PRAIRIE',
+            'MONSOON', 'COASTAL', 'SAVANNA',
+            'MOUNTAIN', 'WOODLAND', 'SEASHORE', 'WILDFIRE', 'SNOWFALL', 'SUNLIGHT', 'FOOTHILL', 'LAKESIDE',
+            'MUDSLIDE', 'RAINFALL', 'SANDBANK', 'TREETOPS', 'ROSEBUSH'
         ],
         animals: [
-            'CAT', 'DOG', 'BAT', 'RAT', 'FOX', 'WOLF', 'BEAR', 'LION', 'TIGER', 'PUMA',
-            'DEER', 'MOOSE', 'ELK', 'HARE', 'OWL', 'HAWK', 'DOVE', 'CROW', 'SWAN', 'DUCK',
-            'GOOSE', 'FROG', 'TOAD', 'NEWT', 'CRAB', 'CLAM', 'SEAL', 'WHALE', 'SHARK', 'FISH',
-            'BIRD', 'WORM', 'SLUG', 'SNAIL', 'MOTH', 'WASP', 'FLEA', 'TICK', 'MITE', 'ANT',
-            'PIG', 'COW', 'BULL', 'CALF', 'LAMB', 'GOAT', 'PONY', 'MULE', 'HEN', 'ROOSTER'
+            'CAT', 'DOG', 'BAT', 'RAT', 'FOX', 'OWL', 'COW', 'PIG', 'HEN', 'ANT', 'BEE', 'EEL', 'EMU', 'GNU', 'RAM',
+            'WOLF', 'BEAR', 'LION', 'DEER', 'HARE', 'HAWK', 'DOVE', 'CROW', 'SWAN', 'DUCK', 'FROG', 'TOAD', 'NEWT', 'CRAB',
+            'CLAM', 'SEAL', 'FISH', 'BIRD', 'WORM', 'SLUG', 'MOTH', 'WASP', 'FLEA', 'TICK', 'MITE', 'BULL', 'CALF', 'LAMB',
+            'GOAT', 'PONY', 'MULE', 'MINK', 'LYNX', 'IBIS', 'WREN', 'LARK', 'MOLE', 'BOAR',
+            'TIGER', 'MOOSE', 'WHALE', 'SHARK', 'GOOSE', 'CRANE', 'EAGLE', 'RAVEN', 'FINCH', 'ROBIN', 'HERON', 'STORK',
+            'SNAKE', 'VIPER', 'COBRA', 'GECKO', 'LLAMA', 'CAMEL', 'BISON', 'HORSE', 'MOUSE', 'OTTER', 'SKUNK', 'QUAIL',
+            'PARROT', 'JAGUAR', 'PYTHON', 'IGUANA', 'TURTLE', 'SALMON', 'SPIDER', 'BEETLE', 'DONKEY', 'MONKEY', 'COUGAR',
+            'FALCON', 'CONDOR', 'PIGEON', 'RABBIT', 'FERRET', 'BADGER', 'WALRUS', 'OYSTER', 'TOUCAN',
+            'CHEETAH', 'GORILLA', 'DOLPHIN', 'PANTHER', 'PELICAN', 'SPARROW', 'HAMSTER', 'BUFFALO', 'MUSTANG', 'LOBSTER',
+            'OCTOPUS', 'GAZELLE', 'GIRAFFE', 'PENGUIN',
+            'ELEPHANT', 'ANTELOPE', 'HEDGEHOG', 'REINDEER', 'PHEASANT', 'SQUIRREL', 'KANGAROO', 'FLAMINGO', 'CARDINAL',
+            'CHIPMUNK', 'STARFISH', 'SEAHORSE', 'SCORPION', 'MACKEREL'
         ],
         food: [
-            'BREAD', 'TOAST', 'CAKE', 'PIE', 'TART', 'BUN', 'ROLL', 'LOAF', 'CRUST', 'CRUMB',
-            'RICE', 'BEAN', 'CORN', 'PEA', 'NUT', 'SEED', 'OAT', 'RYE', 'WHEAT', 'GRAIN',
-            'BEEF', 'PORK', 'HAM', 'BACON', 'STEAK', 'CHOP', 'RIB', 'WING', 'LEG', 'EGG',
-            'MILK', 'CREAM', 'CHEESE', 'BUTTER', 'YOGURT', 'SOUP', 'STEW', 'BROTH', 'SAUCE', 'GRAVY',
-            'APPLE', 'PEAR', 'PLUM', 'GRAPE', 'LIME', 'LEMON', 'PEACH', 'MANGO', 'MELON', 'BERRY'
+            'PIE', 'BUN', 'RYE', 'OAT', 'HAM', 'RIB', 'EGG', 'JAM', 'FIG', 'NUT', 'SOY', 'TEA', 'ALE', 'DIP', 'GUM',
+            'CAKE', 'TART', 'ROLL', 'LOAF', 'RICE', 'BEAN', 'CORN', 'SEED', 'BEEF', 'PORK', 'WING', 'MILK',
+            'SOUP', 'STEW', 'PEAR', 'PLUM', 'LIME', 'SAGE', 'DILL', 'MINT', 'CLAM', 'CRAB', 'FISH', 'TOFU', 'KALE',
+            'HERB', 'CHOP', 'LAMB', 'VEAL', 'DATE', 'KIWI',
+            'TOAST', 'CRUST', 'CRUMB', 'WHEAT', 'GRAIN', 'BACON', 'STEAK', 'CREAM', 'BROTH', 'SAUCE', 'GRAVY', 'APPLE',
+            'GRAPE', 'LEMON', 'PEACH', 'MANGO', 'MELON', 'BERRY', 'OLIVE', 'ONION', 'SALAD', 'PASTA', 'PIZZA', 'CANDY',
+            'CHEESE', 'YOGURT', 'BUTTER', 'CEREAL', 'WAFFLE', 'MUFFIN', 'COOKIE', 'PASTRY', 'NOODLE', 'PEPPER', 'CARROT',
+            'POTATO', 'TURNIP', 'RADISH', 'CELERY', 'GINGER', 'GARLIC', 'CHERRY', 'BANANA', 'PAPAYA',
+            'BISCUIT', 'PANCAKE', 'GRANOLA', 'OATMEAL', 'AVOCADO', 'CHICKEN', 'SAUSAGE', 'LOBSTER', 'MUSTARD', 'KETCHUP',
+            'CRACKER', 'PRETZEL', 'POPCORN', 'LASAGNA',
+            'SANDWICH', 'DUMPLING', 'CINNAMON', 'MUSHROOM', 'BROCCOLI', 'ZUCCHINI', 'EGGPLANT', 'HONEYDEW',
+            'CHESTNUT', 'TORTILLA', 'SMOOTHIE', 'LEMONADE'
         ],
         human: [
-            'HEAD', 'FACE', 'BROW', 'EYE', 'NOSE', 'MOUTH', 'LIP', 'CHIN', 'JAW', 'EAR',
-            'NECK', 'BACK', 'ARM', 'HAND', 'FIST', 'PALM', 'THUMB', 'WRIST', 'ELBOW', 'CHEST',
-            'HEART', 'LUNG', 'GUT', 'BONE', 'SKIN', 'VEIN', 'NERVE', 'BRAIN', 'CELL', 'GENE',
-            'SOUL', 'MIND', 'MOOD', 'DREAM', 'HOPE', 'FEAR', 'LOVE', 'HATE', 'JOY', 'GRIEF',
-            'BABY', 'CHILD', 'TEEN', 'ADULT', 'ELDER', 'MAN', 'WOMAN', 'BOY', 'GIRL', 'TWIN'
+            'EYE', 'LIP', 'EAR', 'JAW', 'ARM', 'RIB', 'GUT', 'HIP', 'TOE', 'LEG', 'MAN', 'BOY', 'JOY', 'CRY', 'SHY',
+            'HEAD', 'FACE', 'BROW', 'NOSE', 'CHIN', 'NECK', 'BACK', 'HAND', 'FIST', 'PALM', 'KNEE', 'SKIN',
+            'VEIN', 'BONE', 'CELL', 'GENE', 'SOUL', 'MIND', 'MOOD', 'HOPE', 'FEAR', 'LOVE', 'HATE', 'BABY', 'TEEN',
+            'GIRL', 'TWIN', 'BODY', 'HAIR', 'LUNG', 'FOOT',
+            'THUMB', 'ELBOW', 'CHEST', 'HEART', 'BRAIN', 'NERVE', 'DREAM', 'GRIEF', 'CHILD', 'ADULT', 'ELDER', 'WOMAN',
+            'BLOOD', 'SKULL', 'SPINE', 'ANKLE', 'CHEEK', 'SMILE', 'VOICE', 'SIGHT', 'TOUCH', 'SENSE', 'THINK', 'SLEEP',
+            'TONGUE', 'MUSCLE', 'FINGER', 'TISSUE', 'BREATH', 'MEMORY', 'SPIRIT', 'PEOPLE', 'PARENT', 'FRIEND', 'SISTER',
+            'SORROW', 'TALENT', 'BELIEF', 'WISDOM', 'VIRTUE', 'MOTHER', 'FATHER', 'NEPHEW', 'COUSIN',
+            'BROTHER', 'HUSBAND', 'FEELING', 'THOUGHT', 'PASSION', 'COURAGE', 'EMOTION', 'TODDLER',
+            'GROWING', 'HEALTHY', 'THINKER', 'ATHLETE',
+            'DAUGHTER', 'SHOULDER', 'FOREHEAD', 'INSTINCT', 'PATIENCE', 'STRENGTH', 'CHILDREN', 'THINKING', 'FEELINGS',
+            'LAUGHTER', 'KINDNESS', 'RELATIVE', 'ANCESTOR'
         ],
         home: [
-            'DOOR', 'WALL', 'ROOF', 'FLOOR', 'TILE', 'BRICK', 'BEAM', 'FRAME', 'PANE', 'GLASS',
-            'BED', 'DESK', 'CHAIR', 'TABLE', 'COUCH', 'SHELF', 'LAMP', 'RUG', 'MAT', 'DRAPE',
-            'SINK', 'TUB', 'SHOWER', 'TOILET', 'FAUCET', 'DRAIN', 'PIPE', 'VENT', 'FAN', 'HEAT',
-            'STOVE', 'OVEN', 'FRIDGE', 'PAN', 'POT', 'CUP', 'MUG', 'BOWL', 'PLATE', 'DISH',
-            'KEY', 'LOCK', 'KNOB', 'HINGE', 'BOLT', 'NAIL', 'SCREW', 'WIRE', 'CORD', 'PLUG'
+            'BED', 'RUG', 'MAT', 'MUG', 'CUP', 'PAN', 'POT', 'FAN', 'KEY', 'TAP', 'JAR', 'LID', 'TIN', 'MOP', 'BOX',
+            'DOOR', 'WALL', 'ROOF', 'TILE', 'BEAM', 'PANE', 'DESK', 'LAMP', 'SINK', 'OVEN', 'BOWL', 'DISH', 'LOCK',
+            'KNOB', 'BOLT', 'NAIL', 'WIRE', 'CORD', 'PLUG', 'ROOM', 'HALL', 'SOFA', 'BATH', 'IRON',
+            'RACK', 'HOOK', 'TRAY', 'VASE', 'STEP', 'YARD',
+            'FLOOR', 'GLASS', 'BRICK', 'FRAME', 'CHAIR', 'TABLE', 'SHELF', 'DRAPE', 'STOVE', 'PLATE', 'HINGE',
+            'SCREW', 'FENCE', 'PORCH', 'TOWEL', 'BROOM', 'CLOTH', 'BLIND', 'BENCH', 'STAIR', 'BRUSH', 'TRUNK',
+            'CLOSET', 'GARDEN', 'GARAGE', 'PILLOW', 'MIRROR', 'FAUCET', 'SHOWER', 'CARPET', 'MANTEL', 'PANTRY', 'BUCKET',
+            'CANDLE', 'HEATER', 'WINDOW', 'BASKET', 'SPONGE', 'DRAWER', 'KETTLE', 'NAPKIN',
+            'KITCHEN', 'BEDROOM', 'HALLWAY', 'CEILING', 'CABINET', 'CURTAIN', 'BLANKET', 'COUNTER', 'BALCONY', 'DOORMAT',
+            'CHIMNEY', 'LAUNDRY', 'CUSHION', 'SHELTER',
+            'BATHROOM', 'BASEMENT', 'BACKYARD', 'DOORBELL', 'ARMCHAIR', 'BOOKCASE', 'WARDROBE', 'MATTRESS', 'PLUMBING',
+            'HANDRAIL', 'ORNAMENT', 'CUPBOARD', 'STAIRWAY'
         ],
         city: [
-            'ROAD', 'LANE', 'ALLEY', 'BLOCK', 'PLAZA', 'COURT', 'PARK', 'MALL', 'SHOP', 'STORE',
-            'BANK', 'POST', 'CAFE', 'BAR', 'CLUB', 'HOTEL', 'MOTEL', 'INN', 'GYM', 'SPA',
-            'TOWER', 'BRIDGE', 'TUNNEL', 'RAIL', 'METRO', 'TRAM', 'BUS', 'CAB', 'TAXI', 'VAN',
-            'CAR', 'TRUCK', 'BIKE', 'MOPED', 'TRAIN', 'PLANE', 'JET', 'BOAT', 'SHIP', 'FERRY',
-            'SIGN', 'POLE', 'LIGHT', 'CURB', 'GRATE', 'BENCH', 'TRASH', 'BIN', 'CONE', 'FENCE'
+            'BUS', 'CAB', 'VAN', 'CAR', 'JET', 'BAR', 'INN', 'GYM', 'SPA', 'PUB', 'LOT', 'WAY', 'HUB', 'ARC',
+            'ROAD', 'LANE', 'PARK', 'MALL', 'SHOP', 'BANK', 'POST', 'CAFE', 'CLUB', 'SIGN', 'POLE', 'CURB', 'WALK',
+            'TAXI', 'BIKE', 'TRAM', 'RAIL', 'BOAT', 'SHIP', 'DOCK', 'PIER', 'PORT', 'FLAT', 'GATE', 'ARCH', 'SLAB',
+            'CONE', 'RAMP', 'LIFT', 'ZONE', 'TOWN',
+            'ALLEY', 'BLOCK', 'PLAZA', 'COURT', 'STORE', 'HOTEL', 'MOTEL', 'TOWER', 'TRAIN', 'PLANE', 'FERRY', 'BENCH',
+            'TRASH', 'FENCE', 'LIGHT', 'METRO', 'MOPED', 'ROUTE', 'DEPOT', 'CROWD', 'WHEEL', 'METER', 'CROSS', 'NOISE',
+            'BRIDGE', 'TUNNEL', 'AVENUE', 'CHURCH', 'MUSEUM', 'SCHOOL', 'MARKET', 'CINEMA', 'OFFICE', 'STREET', 'SUBWAY',
+            'STATUE', 'SQUARE', 'GARAGE', 'CORNER', 'HARBOR', 'PALACE', 'TEMPLE', 'OUTLET',
+            'HIGHWAY', 'TRANSIT', 'AIRPORT', 'STATION', 'LIBRARY', 'THEATER', 'FACTORY', 'PARKING', 'TRAFFIC', 'QUARTER',
+            'RAILWAY', 'BOROUGH', 'VILLAGE', 'TROLLEY',
+            'BUILDING', 'SIDEWALK', 'MONUMENT', 'HOSPITAL', 'PHARMACY', 'BOUTIQUE', 'LANDMARK', 'MOTORWAY',
+            'TERMINAL', 'DISTRICT', 'CROSSING', 'OVERPASS'
         ],
         fashion: [
-            'SHIRT', 'PANTS', 'JEANS', 'SKIRT', 'DRESS', 'SUIT', 'COAT', 'VEST', 'CAPE', 'ROBE',
-            'HAT', 'CAP', 'HOOD', 'SCARF', 'TIE', 'BOW', 'BELT', 'STRAP', 'CLASP', 'BUCKLE',
-            'SHOE', 'BOOT', 'HEEL', 'SOLE', 'LACE', 'SOCK', 'HOSE', 'GLOVE', 'MITT', 'CUFF',
-            'RING', 'CHAIN', 'BEAD', 'GEM', 'PEARL', 'GOLD', 'SILVER', 'STONE', 'JEWEL', 'CHARM',
-            'SILK', 'WOOL', 'LINEN', 'COTTON', 'DENIM', 'SUEDE', 'FUR', 'HIDE', 'LACE', 'MESH'
+            'HAT', 'CAP', 'TIE', 'BOW', 'FUR', 'GEM', 'PIN', 'DYE', 'HEM', 'TAB', 'ZIP', 'BIB', 'WIG', 'FIT',
+            'COAT', 'VEST', 'CAPE', 'ROBE', 'HOOD', 'BELT', 'SHOE', 'BOOT', 'HEEL', 'SOLE', 'LACE', 'SOCK', 'CUFF',
+            'RING', 'BEAD', 'GOLD', 'SILK', 'WOOL', 'MESH', 'GOWN', 'WRAP', 'SASH', 'KNIT', 'SNAP', 'STUD',
+            'VEIL', 'BAND', 'TRIM', 'CORD', 'TOTE',
+            'SHIRT', 'PANTS', 'JEANS', 'SKIRT', 'DRESS', 'SCARF', 'GLOVE', 'CHAIN', 'PEARL', 'JEWEL', 'CHARM', 'LINEN',
+            'DENIM', 'SUEDE', 'PLAID', 'SATIN', 'TWEED', 'WEAVE', 'CLASP', 'BERET', 'SHAWL', 'SMOCK', 'FIBER', 'PLEAT',
+            'BLAZER', 'JACKET', 'TUXEDO', 'SANDAL', 'LOAFER', 'CORSET', 'ANORAK', 'PONCHO', 'FEDORA', 'BEANIE', 'BUCKLE',
+            'BROOCH', 'ANKLET', 'CHOKER', 'COTTON', 'VELVET', 'SEQUIN', 'TASSEL', 'RIBBON', 'FABRIC',
+            'SWEATER', 'SNEAKER', 'LEGGING', 'PAJAMAS', 'EARRING', 'PENDANT', 'DIAMOND', 'PAISLEY',
+            'FLANNEL', 'CHIFFON', 'LEATHER', 'PRINTED',
+            'NECKLACE', 'CARDIGAN', 'JUMPSUIT', 'RAINCOAT', 'STILETTO', 'CASHMERE', 'FOOTWEAR', 'CUFFLINK', 'WARDROBE',
+            'OVERCOAT', 'KNITWEAR'
         ],
         tech: [
-            'CODE', 'DATA', 'FILE', 'BYTE', 'DISK', 'CHIP', 'CARD', 'PORT', 'SLOT', 'DRIVE',
-            'SCREEN', 'MOUSE', 'KEY', 'PAD', 'BOARD', 'CABLE', 'WIRE', 'PLUG', 'JACK', 'HUB',
-            'WEB', 'SITE', 'PAGE', 'LINK', 'BLOG', 'POST', 'CHAT', 'TEXT', 'MAIL', 'SPAM',
-            'APP', 'GAME', 'TOOL', 'BOT', 'BUG', 'PATCH', 'HACK', 'VIRUS', 'WORM', 'SCRIPT',
-            'CLOUD', 'SERVER', 'HOST', 'NODE', 'GRID', 'NET', 'WIFI', 'SIGNAL', 'BAND', 'WAVE'
+            'WEB', 'APP', 'BUG', 'BOT', 'NET', 'HUB', 'RAM', 'USB', 'PIN', 'LOG', 'TAG', 'SQL', 'API', 'CPU', 'GPU',
+            'CODE', 'DATA', 'FILE', 'BYTE', 'DISK', 'CHIP', 'CARD', 'PORT', 'SLOT', 'SITE', 'PAGE', 'LINK', 'BLOG',
+            'POST', 'CHAT', 'TEXT', 'MAIL', 'SPAM', 'GAME', 'TOOL', 'HACK', 'WIFI', 'WAVE', 'BAND', 'NODE', 'GRID',
+            'FONT', 'ICON', 'LOOP', 'PING', 'SYNC', 'SCAN',
+            'MOUSE', 'BOARD', 'CABLE', 'PIXEL', 'PATCH', 'VIRUS', 'CLOUD', 'TOKEN', 'STACK', 'FRAME', 'DEBUG', 'QUERY',
+            'ARRAY', 'INDEX', 'CACHE', 'FLASH', 'ROUTE', 'PRINT', 'MODAL', 'INPUT', 'CLONE', 'PARSE', 'FETCH', 'MERGE',
+            'SCREEN', 'SERVER', 'SCRIPT', 'SIGNAL', 'DEVICE', 'ROUTER', 'TABLET', 'SOCKET', 'TOGGLE', 'WIDGET', 'KERNEL',
+            'DRIVER', 'MODULE', 'CURSOR', 'PLUGIN', 'THREAD', 'STREAM', 'BINARY', 'CODING', 'BACKUP',
+            'BROWSER', 'PROGRAM', 'NETWORK', 'DESKTOP', 'MONITOR', 'DIGITAL', 'COMPILE', 'RUNTIME', 'STORAGE', 'GATEWAY',
+            'HOSTING', 'SCANNER', 'DISPLAY',
+            'SOFTWARE', 'HARDWARE', 'DATABASE', 'KEYBOARD', 'INTERNET', 'DOWNLOAD', 'WIRELESS', 'COMPUTER', 'AUTOMATE',
+            'COMPILER', 'TERMINAL', 'FUNCTION', 'PROTOCOL', 'ETHERNET'
         ],
         travel: [
-            'TRIP', 'TOUR', 'TREK', 'HIKE', 'WALK', 'RIDE', 'DRIVE', 'SAIL', 'CRUISE', 'FLIGHT',
-            'MAP', 'ROUTE', 'PATH', 'TRAIL', 'ROAD', 'PASS', 'GATE', 'EXIT', 'RAMP', 'LOOP',
-            'BAG', 'CASE', 'PACK', 'TRUNK', 'POUCH', 'PURSE', 'WALLET', 'TICKET', 'PASS', 'VISA',
-            'HOTEL', 'ROOM', 'SUITE', 'LOBBY', 'POOL', 'BEACH', 'RESORT', 'CABIN', 'TENT', 'CAMP',
-            'GUIDE', 'HOST', 'GUEST', 'LOCAL', 'NATIVE', 'TOURIST', 'NOMAD', 'PILGRIM', 'CREW', 'STAFF'
+            'MAP', 'BAG', 'INN', 'SKI', 'SEA', 'SPA', 'CAB', 'FLY', 'ROW', 'JOG', 'HOP', 'DIP', 'VAN',
+            'TRIP', 'TOUR', 'TREK', 'HIKE', 'WALK', 'RIDE', 'SAIL', 'ROAD', 'PATH', 'GATE', 'EXIT', 'RAMP', 'LOOP',
+            'CASE', 'PACK', 'VISA', 'ROOM', 'POOL', 'TENT', 'CAMP', 'HOST', 'CREW', 'DOCK', 'PORT', 'DECK', 'RAFT',
+            'LAKE', 'COVE', 'GULF', 'CAPE', 'ISLE', 'PASS',
+            'DRIVE', 'TRAIL', 'ROUTE', 'BEACH', 'CABIN', 'GUIDE', 'GUEST', 'LOCAL', 'OASIS', 'TRAIN', 'PLANE', 'FERRY',
+            'CANOE', 'KAYAK', 'YACHT', 'VISTA', 'LODGE', 'MOTEL', 'HOTEL', 'DEPOT', 'CARGO', 'COAST', 'WHARF',
+            'FLIGHT', 'CRUISE', 'VOYAGE', 'SAFARI', 'RESORT', 'BRIDGE', 'TEMPLE', 'CASTLE', 'PALACE', 'MUSEUM', 'TICKET',
+            'VALLEY', 'ISLAND', 'CANYON', 'MARINA', 'HOSTEL', 'TRAVEL', 'LOUNGE', 'SCENIC', 'HARBOR',
+            'AIRPORT', 'LUGGAGE', 'TRANSIT', 'COMPASS', 'JOURNEY', 'TOURIST', 'CAMPING', 'SAILING', 'CUSTOMS',
+            'HOLIDAY', 'CARAVAN', 'GETAWAY', 'CHARTER',
+            'PASSPORT', 'SUITCASE', 'BACKPACK', 'EXPLORER', 'VACATION', 'RAILROAD', 'TERMINAL', 'BOARDING', 'TRAVELER',
+            'LANDMARK', 'MONUMENT', 'SEASHORE', 'PANORAMA', 'ROADTRIP'
         ],
         science: [
-            'ATOM', 'ION', 'BOND', 'MASS', 'FORCE', 'HEAT', 'LIGHT', 'WAVE', 'FIELD', 'FLUX',
-            'CELL', 'DNA', 'RNA', 'GENE', 'TRAIT', 'LIFE', 'DEATH', 'BIRTH', 'GROWTH', 'DECAY',
-            'LAB', 'TEST', 'TRIAL', 'PROOF', 'FACT', 'LAW', 'RULE', 'THEORY', 'MODEL', 'GRAPH',
-            'LENS', 'SCOPE', 'PROBE', 'BEAM', 'RAY', 'PULSE', 'SCAN', 'IMAGE', 'SAMPLE', 'SLIDE',
-            'ACID', 'BASE', 'SALT', 'GAS', 'SOLID', 'LIQUID', 'PLASMA', 'METAL', 'ALLOY', 'CRYSTAL'
+            'ION', 'GAS', 'RAY', 'LAB', 'DNA', 'RNA', 'ARC', 'ORB', 'OHM', 'ERG', 'AMP', 'DIM', 'HOT', 'WET', 'MIX',
+            'ATOM', 'BOND', 'MASS', 'HEAT', 'WAVE', 'CELL', 'GENE', 'LIFE', 'FACT', 'LENS', 'BEAM', 'SCAN', 'ACID',
+            'BASE', 'SALT', 'FLUX', 'FUSE', 'VOLT', 'WATT', 'CORE', 'DATA', 'IRON', 'LEAD', 'ZINC', 'NEON', 'GOLD',
+            'TANK', 'TUBE', 'DROP', 'FLOW', 'SPIN', 'DOSE',
+            'FORCE', 'LIGHT', 'FIELD', 'TRAIT', 'DEATH', 'BIRTH', 'DECAY', 'PROBE', 'PULSE', 'IMAGE', 'SOLID', 'METAL',
+            'ALLOY', 'TRIAL', 'PROOF', 'GRAPH', 'MODEL', 'ORBIT', 'QUARK', 'LASER', 'PRISM', 'STEAM', 'RADAR', 'SCALE',
+            'LIQUID', 'PLASMA', 'ENERGY', 'MOTION', 'PROTON', 'PHOTON', 'FOSSIL', 'SAMPLE', 'THEORY', 'RESULT', 'METHOD',
+            'MATTER', 'NEURON', 'FUSION', 'OXYGEN', 'CARBON', 'HELIUM', 'COPPER',
+            'CRYSTAL', 'ELEMENT', 'FORMULA', 'NEUTRON', 'ISOTOPE', 'MINERAL', 'POLYMER', 'BIOLOGY', 'PHYSICS', 'GRAVITY',
+            'DENSITY', 'VOLTAGE', 'CHEMIST', 'NUCLEUS',
+            'MOLECULE', 'ELECTRON', 'CHEMICAL', 'REACTION', 'PARTICLE', 'SPECTRUM', 'CATALYST', 'ORGANISM', 'BACTERIA',
+            'HYDROGEN', 'NITROGEN', 'TITANIUM', 'CALCULUS', 'COMPOUND'
         ]
     },
     es: {
         nature: [
-            'ARBOL', 'HOJA', 'RAIZ', 'RAMA', 'TALLO', 'FLOR', 'MUSGO', 'HIERBA', 'PINO', 'ROBLE',
-            'SELVA', 'BOSQUE', 'LAGO', 'RIO', 'MAR', 'OLA', 'PLAYA', 'ARENA', 'ROCA', 'PIEDRA',
-            'MONTE', 'VALLE', 'CERRO', 'CUEVA', 'ISLA', 'COSTA', 'BAHIA', 'CABO', 'TIERRA', 'SUELO',
-            'LLUVIA', 'NIEVE', 'HIELO', 'NIEBLA', 'VIENTO', 'BRISA', 'SOL', 'LUNA', 'CIELO', 'NUBE',
-            'ESTRELLA', 'AURORA', 'OCASO', 'ALBA', 'DIA', 'NOCHE', 'CAMPO', 'PRADO', 'JARDIN', 'PARQUE'
+            'RIO', 'MAR', 'OLA', 'SOL', 'DIA', 'LUZ', 'VID', 'ERA', 'GEL', 'TUL', 'CAL', 'RED', 'SAL',
+            'HOJA', 'RAIZ', 'RAMA', 'FLOR', 'PINO', 'LAGO', 'ROCA', 'ISLA', 'CABO', 'LUNA', 'NUBE', 'ALBA', 'ROSA',
+            'LODO', 'SETA', 'ALGA', 'OLMO', 'CIMA', 'LOMA', 'PICO', 'FOSA', 'DUNA', 'GOTA', 'LAVA', 'MINA', 'OLEO',
+            'ARBOL', 'TALLO', 'MUSGO', 'ROBLE', 'SELVA', 'PLAYA', 'ARENA', 'MONTE', 'VALLE', 'CERRO', 'CUEVA', 'COSTA',
+            'BAHIA', 'SUELO', 'NIEVE', 'HIELO', 'BRISA', 'CIELO', 'NOCHE', 'CAMPO', 'PRADO', 'LIRIO', 'CORAL', 'SAUCE',
+            'HIERBA', 'BOSQUE', 'PIEDRA', 'TIERRA', 'LLUVIA', 'NIEBLA', 'JARDIN', 'PARQUE', 'LAGUNA', 'COLINA',
+            'TRONCO', 'HELADA', 'ESPIGA', 'JUNCO', 'ESPUMA', 'SEMILLA', 'CHOPERA', 'PINEDA',
+            'CASCADA', 'PRADERA', 'GLACIAR', 'LLANURA', 'PANTANO', 'BARRANCO', 'COSECHA', 'FOLLAJE', 'SABANA',
+            'ESTEPA', 'VOLCAN', 'MESETA', 'RIBERA',
+            'ESTRELLA', 'AMANECER', 'TEMPORAL', 'SENDERO', 'HUMEDAL', 'PEDREGAL', 'ARRECIFE', 'TORRENTE'
         ],
         animals: [
-            'GATO', 'PERRO', 'LOBO', 'ZORRO', 'OSO', 'LEON', 'TIGRE', 'PUMA', 'CIERVO', 'ALCE',
-            'LIEBRE', 'CONEJO', 'BUHO', 'AGUILA', 'HALCON', 'PALOMA', 'CUERVO', 'CISNE', 'PATO', 'GANSO',
-            'RANA', 'SAPO', 'CANGREJO', 'FOCA', 'BALLENA', 'DELFIN', 'TIBURON', 'PEZ', 'PULPO', 'MEDUSA',
-            'AVE', 'PAJARO', 'MOSCA', 'ABEJA', 'AVISPA', 'HORMIGA', 'ARAÑA', 'GRILLO', 'MARIPOSA', 'POLILLA',
-            'CERDO', 'VACA', 'TORO', 'CABRA', 'OVEJA', 'CABALLO', 'BURRO', 'MULA', 'GALLINA', 'GALLO'
+            'OSO', 'PEZ', 'AVE', 'RES', 'BOA', 'GNU', 'EMU', 'CAN', 'YAK', 'KOI', 'ROE', 'BUE', 'MUL',
+            'GATO', 'LOBO', 'LEON', 'PUMA', 'PATO', 'RANA', 'SAPO', 'FOCA', 'TORO', 'VACA', 'MULA', 'BUHO', 'ORCA',
+            'MONO', 'GAMO', 'CUCO', 'RATA', 'PONI', 'LORO', 'ALCE', 'NIDO', 'CRIA', 'MULO', 'LORA',
+            'PERRO', 'ZORRO', 'TIGRE', 'CISNE', 'GANSO', 'CABRA', 'OVEJA', 'BURRO', 'MOSCA', 'ABEJA', 'CERDO', 'POLLO',
+            'CORAL', 'BUITRE', 'GRILLO', 'CUERVO', 'LIEBRE', 'TRUCHA', 'PULPO', 'GARZA', 'ARDILLA', 'LINCE',
+            'HALCON', 'PALOMA', 'AVISPA', 'SALMON', 'VENADO', 'IGUANA', 'NUTRIA', 'GRULLA', 'CAIMAN', 'CONCHA',
+            'PAJARO', 'CONEJO', 'DELFIN', 'AGUILA', 'MEDUSA', 'LAGARTO',
+            'GORILA', 'JIRAFA', 'ARANA', 'GALLINA', 'TORTUGA', 'SERPIENTE',
+            'LEOPARDO', 'POLILLA', 'CANGURO', 'CABRITO', 'POTRO', 'MORSA',
+            'ELEFANTE', 'FLAMENCO', 'CAMALEON', 'ALBATROS', 'CORALINO', 'PEREZOSO', 'CABALLITO', 'DROMEDARIO'
         ],
         food: [
-            'PAN', 'TORTA', 'PASTEL', 'TARTA', 'BOLLO', 'ARROZ', 'FRIJOL', 'MAIZ', 'TRIGO', 'CEBADA',
-            'CARNE', 'POLLO', 'CERDO', 'JAMON', 'TOCINO', 'FILETE', 'COSTILLA', 'ALA', 'HUEVO', 'LECHE',
-            'CREMA', 'QUESO', 'YOGUR', 'SOPA', 'CALDO', 'SALSA', 'ACEITE', 'SAL', 'AZUCAR', 'MIEL',
-            'MANZANA', 'PERA', 'UVA', 'LIMON', 'NARANJA', 'MELON', 'SANDIA', 'FRESA', 'CEREZA', 'PLATANO',
-            'PAPA', 'TOMATE', 'CEBOLLA', 'AJO', 'ZANAHORIA', 'LECHUGA', 'COL', 'PEPINO', 'PIMIENTO', 'CHILE'
+            'PAN', 'SAL', 'UVA', 'AJO', 'COL', 'RON', 'GEL', 'MES', 'SOL', 'OCA', 'NUZ', 'TES', 'VID',
+            'TORTA', 'TARTA', 'BOLLO', 'ARROZ', 'MAIZ', 'TRIGO', 'CARNE', 'POLLO', 'JAMON', 'HUEVO', 'LECHE',
+            'SOPA', 'MIEL', 'FRESA', 'NUEZ', 'PERA', 'LIMA', 'NATA', 'PAPA', 'PURE', 'CAFE', 'HIGO', 'KIWI',
+            'SOJA', 'PAVO', 'ATUN', 'COCO', 'JUGO', 'TACO',
+            'CREMA', 'QUESO', 'YOGUR', 'CALDO', 'SALSA', 'LIMON', 'MELON', 'CHILE', 'PASTA', 'PIZZA', 'DULCE',
+            'JALEA', 'GUISO', 'ASADO', 'ADOBO', 'FILETE', 'MANGO', 'CEREZA', 'AVENA', 'SUSHI',
+            'PASTEL', 'TOCINO', 'POSTRE', 'MANJAR', 'BATIDO', 'HELADO', 'SANDIA', 'CEBADA', 'ACEITE', 'AZUCAR',
+            'GALLETA', 'GRANOLA', 'MANTECA', 'PATATA', 'PEPINO', 'TOMATE',
+            'CANELA', 'VINAGRE', 'EMPANADA', 'CHURROS', 'ALMENDRA', 'MOSTAZA', 'CALZONE', 'BIZCOCHO',
+            'CALABAZA', 'ESPINACA',
+            'CARAMELO', 'SANDWICH', 'TORTILLA', 'PAELLA', 'REFRESCO', 'GELATINA', 'MAHONESA', 'LIMONADA'
         ],
         human: [
-            'CABEZA', 'CARA', 'FRENTE', 'OJO', 'NARIZ', 'BOCA', 'LABIO', 'LENGUA', 'DIENTE', 'OREJA',
-            'CUELLO', 'HOMBRO', 'BRAZO', 'MANO', 'DEDO', 'UNA', 'CODO', 'PECHO', 'ESPALDA', 'CINTURA',
-            'PIERNA', 'RODILLA', 'PIE', 'TOBILLO', 'TALON', 'CORAZON', 'PULMON', 'CEREBRO', 'HUESO', 'PIEL',
-            'SANGRE', 'NERVIO', 'ALMA', 'MENTE', 'SUENO', 'MIEDO', 'AMOR', 'ODIO', 'ALEGRIA', 'TRISTEZA',
-            'BEBE', 'NINO', 'JOVEN', 'ADULTO', 'ANCIANO', 'HOMBRE', 'MUJER', 'CHICO', 'CHICA', 'GEMELO'
+            'OJO', 'PIE', 'SER', 'VER', 'VOZ', 'FIN', 'MAL', 'PAZ', 'LUZ', 'VIA', 'SED', 'RED', 'ERA',
+            'CARA', 'BOCA', 'DEDO', 'CODO', 'PIEL', 'ALMA', 'AMOR', 'BEBE', 'RISA', 'MANO', 'PELO', 'PASO',
+            'HIJO', 'MAMA', 'PAPA', 'ODIO', 'VIDA', 'NINO', 'DIOS', 'EDAD', 'OIDO', 'CELO', 'ABAD',
+            'BRAZO', 'JOVEN', 'MUJER', 'CHICO', 'CHICA', 'PECHO', 'TALON', 'GENIO', 'DOLOR', 'CALMA', 'VISTA',
+            'SUENO', 'MIEDO', 'MENTE', 'LABIO', 'HUESO', 'GEMELO', 'HOMBRE', 'ADULTO', 'FRENTE', 'PIERNA',
+            'NERVIO', 'MUSCULO', 'SANGRE', 'LENGUA', 'DIENTE', 'CUELLO', 'HOMBRO', 'CEREBRO', 'CABEZA',
+            'ESPOSA', 'ESPOSO', 'ABUELO', 'ABUELA', 'FUERZA', 'VIRTUD', 'SENTIDO',
+            'HERMANO', 'HERMANA', 'SOBRINO', 'COLUMNA', 'COLCHON', 'DERECHO', 'TERNURA', 'AMISTAD',
+            'VALENTIA', 'RESPETO', 'TALENTO', 'COMEDOR', 'INFANCIA',
+            'FORTALEZA', 'VOLUNTAD', 'RECUERDO', 'SOCIEDAD', 'IDENTIDAD', 'HUMANIDAD', 'FELICIDAD', 'BIENESTAR'
         ],
         home: [
-            'PUERTA', 'PARED', 'TECHO', 'SUELO', 'VENTANA', 'CRISTAL', 'LADRILLO', 'VIGA', 'ESCALERA', 'PASILLO',
-            'CAMA', 'MESA', 'SILLA', 'SOFA', 'ARMARIO', 'ESTANTE', 'LAMPARA', 'ALFOMBRA', 'CORTINA', 'ESPEJO',
-            'COCINA', 'HORNO', 'NEVERA', 'LAVABO', 'DUCHA', 'BANERA', 'GRIFO', 'TUBERIA', 'ENCHUFE', 'CABLE',
-            'PLATO', 'VASO', 'TAZA', 'CUCHARA', 'TENEDOR', 'CUCHILLO', 'OLLA', 'SARTEN', 'CUBO', 'ESCOBA',
-            'LLAVE', 'CANDADO', 'TIMBRE', 'CERRADURA', 'BOMBILLA', 'INTERRUPTOR', 'RADIADOR', 'CALEFACCION', 'AIRE', 'VENTILADOR'
+            'LUZ', 'GAS', 'RED', 'SOL', 'LAR', 'CAL', 'VER', 'TUL', 'GEL', 'BAR', 'OCA', 'ERA', 'TEL',
+            'CAMA', 'MESA', 'SOFA', 'VASO', 'TAZA', 'OLLA', 'CUBO', 'AIRE', 'VIGA', 'PISO', 'MURO', 'PILA',
+            'LOZA', 'FOCO', 'TUBO', 'ROPA', 'LATA', 'TINA', 'HILO', 'PALA', 'BOTE', 'CAJA', 'BAUL', 'POMO',
+            'GRIFO', 'JABON', 'PLATO', 'FUNDA',
+            'PUERTA', 'PARED', 'TECHO', 'SUELO', 'DUCHA', 'HORNO', 'CABLE', 'LLAVE', 'MARCO', 'PLANTA', 'TRAPO',
+            'BOLSA', 'MANTA', 'SILLA', 'MUEBLE', 'COCINA', 'ESPEJO', 'TIMBRE', 'NEVERA', 'LAVABO',
+            'SARTEN', 'ESCOBA', 'MACETA', 'BALCON', 'SOTANO', 'JARDIN', 'GARAJE', 'CORTINA', 'LAMPARA',
+            'VENTANA', 'ARMARIO', 'PASILLO', 'ENCHUFE',
+            'COLCHON', 'COMEDOR', 'TERRAZA', 'CHIMENEA', 'ROPERO', 'PERCHERO', 'DESPENSA',
+            'ESCALERA', 'ALMOHADA', 'LAVADORA',
+            'CERRADURA', 'RADIADOR', 'ALFOMBRA', 'ESTANTE', 'TABURETE', 'FREGADERO', 'ESCRITORIO', 'LITERA'
         ],
         city: [
-            'CALLE', 'AVENIDA', 'PLAZA', 'PARQUE', 'BARRIO', 'CENTRO', 'TIENDA', 'BANCO', 'CORREO', 'MERCADO',
-            'CAFE', 'BAR', 'HOTEL', 'MUSEO', 'TEATRO', 'CINE', 'ESTADIO', 'HOSPITAL', 'FARMACIA', 'ESCUELA',
-            'TORRE', 'PUENTE', 'TUNEL', 'METRO', 'TREN', 'AUTOBUS', 'TAXI', 'COCHE', 'MOTO', 'BICI',
-            'AVION', 'BARCO', 'PUERTO', 'AEROPUERTO', 'ESTACION', 'PARADA', 'SEMAFORO', 'ACERA', 'POSTE', 'FAROLA',
-            'CARTEL', 'VALLA', 'BANCO', 'FUENTE', 'ESTATUA', 'MONUMENTO', 'IGLESIA', 'CATEDRAL', 'PALACIO', 'CASTILLO'
+            'BAR', 'BUS', 'CAR', 'LUZ', 'VIA', 'RED', 'GAS', 'RIO', 'PIE', 'FIN', 'PAR', 'SUR', 'ERA',
+            'CAFE', 'TAXI', 'MOTO', 'BICI', 'TREN', 'CINE', 'PASO', 'PISO', 'FARO', 'MURO', 'ARCO', 'ZONA',
+            'RUTA', 'OBRA', 'VADO', 'PARO', 'RIEL', 'NAVE', 'PEON', 'STOP', 'NODO', 'BOCA', 'MINA', 'AIRE',
+            'CALLE', 'PLAZA', 'VENTA', 'POSTE', 'BANCO', 'HOTEL', 'COCHE', 'AVION', 'BARCO', 'RAMPA', 'VERJA',
+            'ACERA', 'METRO', 'ANDEN', 'PASEO', 'FUENTE', 'MUSEO', 'CAMPO', 'TORRE', 'PARED', 'CRUCE', 'BOLSA',
+            'TIENDA', 'PARQUE', 'BARRIO', 'CENTRO', 'MUELLE', 'PUENTE', 'TUNEL', 'ESQUINA', 'FABRICA', 'OFICINA',
+            'ROTONDA', 'MERCADO', 'CORREO', 'TEATRO', 'IGLESIA', 'PALACIO', 'CALLEJON', 'TRANVIA',
+            'ESTATUA', 'ESTACION', 'CATEDRAL', 'FARMACIA', 'ESCUELA', 'ESTADIO', 'SEMAFORO',
+            'EDIFICIO', 'GIMNASIO', 'BOMBEROS', 'CORREOS', 'HOSPITAL', 'MONUMENTO'
         ],
         fashion: [
-            'CAMISA', 'PANTALON', 'FALDA', 'VESTIDO', 'TRAJE', 'ABRIGO', 'CHAQUETA', 'CHALECO', 'CAPA', 'BATA',
-            'SOMBRERO', 'GORRA', 'BUFANDA', 'CORBATA', 'LAZO', 'CINTURON', 'CORREA', 'HEBILLA', 'BOTON', 'CREMALLERA',
-            'ZAPATO', 'BOTA', 'SANDALIA', 'TACON', 'SUELA', 'CORDON', 'CALCETIN', 'MEDIA', 'GUANTE', 'PULSERA',
-            'ANILLO', 'COLLAR', 'PENDIENTE', 'BROCHE', 'PERLA', 'ORO', 'PLATA', 'DIAMANTE', 'RUBI', 'ESMERALDA',
-            'SEDA', 'LANA', 'ALGODON', 'LINO', 'CUERO', 'GAMUZA', 'PIEL', 'TELA', 'HILO', 'AGUJA'
+            'ORO', 'GEL', 'PIE', 'RED', 'TUL', 'LUZ', 'SOL', 'PIN', 'FIN', 'MOD', 'RAZ', 'ALO', 'VER',
+            'BOTA', 'CAPA', 'BATA', 'SEDA', 'LANA', 'HILO', 'TELA', 'PIEL', 'RUBI', 'LAZO', 'FAJA', 'GALA',
+            'MODA', 'TACO', 'RASO', 'NUDO', 'MONO', 'TOGA', 'VELO', 'FINO', 'BOLSO', 'OJAL',
+            'GORRA', 'TRAJE', 'PERLA', 'PLATA', 'CIERRE', 'CUERO', 'TINTE', 'FIBRA', 'TELAR', 'SUELA',
+            'FORRO', 'PUNTO', 'PAÑO', 'LIENZO', 'CREMA', 'LENTEJUELA', 'FELPA', 'DRAPE', 'ROSCA', 'FLECO',
+            'CAMISA', 'FALDA', 'ZAPATO', 'CORDON', 'MEDIA', 'GUANTE', 'ANILLO', 'COLLAR', 'BROCHE',
+            'GAMUZA', 'CHALECO', 'ABRIGO', 'CORREA', 'HEBILLA', 'BOTON',
+            'ENCAJE', 'BORDADO', 'FLECOS', 'SOLAPA', 'JERSEY', 'BLUSON', 'TACONES', 'ESTAMPA',
+            'PIJAMA', 'DIADEMA', 'MANOPLA', 'TIRANTES', 'COLGANTE', 'GEMELOS', 'TURBANTE', 'BERMUDAS',
+            'PASARELA', 'ALPARGATA', 'PANTALON', 'SOMBRERO', 'CALCETIN', 'CAMISETA', 'CAZADORA', 'SUDADERA',
+            'CACHEMIRA', 'PENDIENTE'
         ],
         tech: [
-            'CODIGO', 'DATO', 'ARCHIVO', 'DISCO', 'CHIP', 'TARJETA', 'PUERTO', 'RANURA', 'CABLE', 'ENCHUFE',
-            'PANTALLA', 'RATON', 'TECLA', 'TECLADO', 'RED', 'WIFI', 'SENAL', 'ANTENA', 'ROUTER', 'MODEM',
-            'WEB', 'SITIO', 'PAGINA', 'ENLACE', 'BLOG', 'FORO', 'CHAT', 'MENSAJE', 'CORREO', 'SPAM',
-            'APP', 'JUEGO', 'PROGRAMA', 'SISTEMA', 'SERVIDOR', 'NUBE', 'BASE', 'TABLA', 'CAMPO', 'REGISTRO',
-            'VIRUS', 'ERROR', 'FALLO', 'PARCHE', 'VERSION', 'COPIA', 'BACKUP', 'MEMORIA', 'BATERIA', 'CARGA'
+            'WEB', 'APP', 'RED', 'USB', 'CPU', 'GPS', 'PIN', 'BOT', 'RAM', 'GIF', 'PDF', 'URL', 'LUZ',
+            'DATO', 'CHIP', 'WIFI', 'CHAT', 'BLOG', 'FORO', 'SPAM', 'NUBE', 'BASE', 'MAPA', 'MENU', 'MODO',
+            'BITS', 'RUTA', 'TIPO', 'ZONA', 'GUIA', 'ICONO', 'CLAVE', 'LISTA', 'VISTA', 'FUENTE', 'CARGA',
+            'TABLA', 'DISCO', 'TECLA', 'RATON', 'ENVIO', 'SITIO', 'VIDEO', 'AUDIO', 'JUEGO', 'PIXEL', 'CAMPO',
+            'BOTON', 'CLICK', 'ERROR', 'COPIA', 'TEXTO', 'PANEL', 'MARCO', 'PERFIL', 'FORMA',
+            'CABLE', 'RANURA', 'PUERTO', 'SENAL', 'ANTENA', 'MODEM', 'PAGINA', 'ENLACE', 'CORREO', 'PARCHE',
+            'CODIGO', 'BACKUP', 'IMAGEN', 'SONIDO', 'BUSCAR', 'ACCESO', 'SALIDA', 'CURSOR',
+            'CARPETA', 'FORMATO', 'SCRIPT', 'MODULO', 'DRIVER', 'KERNEL', 'PLUGIN', 'SOCKET',
+            'TECLADO', 'MENSAJE', 'TARJETA', 'MEMORIA', 'BATERIA', 'ARCHIVO', 'SISTEMA', 'ESCANER',
+            'MONITOR', 'PROGRAMA', 'INTERFAZ', 'DESCARGA',
+            'SOFTWARE', 'HARDWARE', 'INTERNET', 'TERMINAL', 'ETHERNET'
         ],
         travel: [
-            'VIAJE', 'VUELO', 'CRUCERO', 'TOUR', 'RUTA', 'CAMINO', 'SENDERO', 'AUTOPISTA', 'CARRETERA', 'ATAJO',
-            'MALETA', 'MOCHILA', 'BOLSO', 'BOLETO', 'PASAJE', 'VISA', 'PASAPORTE', 'RESERVA', 'BILLETE', 'EQUIPAJE',
-            'HOTEL', 'HOSTAL', 'CABANA', 'TIENDA', 'CAMPING', 'RESORT', 'PLAYA', 'PISCINA', 'MONTE', 'SELVA',
-            'GUIA', 'TURISTA', 'VIAJERO', 'MAPA', 'BRUJULA', 'GPS', 'FOTO', 'RECUERDO', 'POSTAL', 'SOUVENIR',
-            'ADUANA', 'FRONTERA', 'EMBAJADA', 'CONSULADO', 'TERMINAL', 'SALA', 'PUERTA', 'EMBARQUE', 'LLEGADA', 'SALIDA'
+            'MAR', 'SOL', 'VIA', 'SUR', 'RIO', 'GPS', 'SKI', 'SPA', 'BUS', 'FIN', 'RED', 'GAS', 'PIE',
+            'TOUR', 'RUTA', 'MAPA', 'GUIA', 'FOTO', 'VISA', 'TAXI', 'TREN', 'ISLA', 'LAGO', 'BOTE', 'MOTO',
+            'BICI', 'PASE', 'FARO', 'CABO', 'CIMA', 'PASO', 'VADO', 'ZONA', 'FILA', 'NAVE', 'DATO', 'RIEL',
+            'VIAJE', 'VUELO', 'HOTEL', 'PLAYA', 'MONTE', 'SELVA', 'BARCO', 'AVION', 'PISTA', 'COSTA', 'ARENA',
+            'MALETA', 'BOLETO', 'PASAJE', 'HOSTAL', 'CABANA', 'LODGE', 'CAMPO', 'NORTE', 'BAHIA', 'RANGO', 'VELERO',
+            'CAMINO', 'RESORT', 'DESTINO', 'POSTAL', 'ADUANA', 'TURISTA', 'CRUCERO', 'BRUJULA',
+            'EQUIPAJE', 'LLEGADA', 'SALIDA', 'MERCADO', 'TEMPLO', 'MUSEO', 'PALACIO', 'MIRADOR', 'PAISAJE',
+            'CASTILLO', 'SENDERO', 'REFUGIO', 'TRAVESIA', 'ESCALADA', 'AVENTURA',
+            'TURISMO', 'ESTANCIA', 'CARAVANA', 'HOSPEDAJE', 'TERMINAL', 'PANORAMA'
         ],
         science: [
-            'ATOMO', 'ION', 'MOLECULA', 'CELULA', 'GEN', 'ADN', 'VIDA', 'MUERTE', 'ENERGIA', 'FUERZA',
-            'MASA', 'PESO', 'VOLUMEN', 'DENSIDAD', 'PRESION', 'CALOR', 'LUZ', 'ONDA', 'CAMPO', 'FLUJO',
-            'LABORATORIO', 'PRUEBA', 'ENSAYO', 'TEORIA', 'LEY', 'FORMULA', 'ECUACION', 'GRAFICO', 'TABLA', 'MODELO',
-            'LENTE', 'MICROSCOPIO', 'TELESCOPIO', 'LASER', 'RAYO', 'PULSO', 'IMAGEN', 'MUESTRA', 'TUBO', 'PROBETA',
-            'ACIDO', 'BASE', 'SAL', 'GAS', 'LIQUIDO', 'SOLIDO', 'PLASMA', 'METAL', 'CRISTAL', 'MINERAL'
+            'ION', 'GAS', 'ADN', 'LUZ', 'LEY', 'SAL', 'SOL', 'OHM', 'ERG', 'AMP', 'CAL', 'RED', 'GEL',
+            'VIDA', 'MASA', 'PESO', 'ONDA', 'DATO', 'TUBO', 'RAYO', 'ZONA', 'POLO', 'CERO', 'ARCO', 'PILA',
+            'NUDO', 'RAIZ', 'CAPA', 'FASE', 'CARGA', 'CAMPO', 'FLUJO', 'ACIDO', 'BASE', 'PLOMO', 'VACIO',
+            'CALOR', 'DOSIS', 'PULSO', 'LASER', 'LENTE', 'METAL', 'TABLA', 'PRUEBA', 'MODELO',
+            'ENSAYO', 'PLASMA', 'HIERRO', 'COBRE', 'PLATA', 'LITIO', 'AZUFRE', 'TEJIDO', 'ORGANO', 'NERVIO',
+            'HELIO', 'NEON', 'ZINC',
+            'FUERZA', 'PROTON', 'FOTON', 'NUCLEO', 'VOLTAJE', 'LIQUIDO', 'SOLIDO', 'CRISTAL', 'MINERAL',
+            'OXIGENO', 'CARBONO',
+            'NEUTRON', 'ISOTOPO', 'POLIMERO', 'GRAVEDAD', 'QUIMICA', 'FORMULA', 'ELEMENTO', 'PROBETA',
+            'MOLECULA', 'ECUACION', 'TEOREMA', 'ANALISIS', 'MEZCLA', 'FISICA',
+            'REACCION', 'ESPECTRO', 'TITANIO', 'UNIVERSO', 'GALAXIA', 'BACTERIA', 'COMPUESTO'
         ]
     }
 };

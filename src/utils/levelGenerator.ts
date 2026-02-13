@@ -86,10 +86,39 @@ export function generateLevel(levelId: number, lang?: SupportedLanguage): Level 
         gridSize = 8; wordCount = 8; difficulty = 'Expert'; reward = 25;
     }
 
-    // Select words deterministically
-    const validWords = categoryWords.filter(w => w.length <= gridSize);
-    const shuffled = seededShuffle(validWords, levelId);
-    const selectedWords = shuffled.slice(0, wordCount);
+    // Select words deterministically with robust validation
+    const validWords = categoryWords.filter(w => w.length >= 2 && w.length <= gridSize);
+    let shuffled = seededShuffle(validWords, levelId);
+
+    // Remove duplicates that might exist in the word bank
+    shuffled = [...new Set(shuffled)];
+
+    let selectedWords = shuffled.slice(0, wordCount);
+
+    // Fallback: if not enough words in this category, borrow from other categories
+    if (selectedWords.length < wordCount) {
+        const allCategories = Object.keys(wordBank);
+        for (const cat of allCategories) {
+            if (selectedWords.length >= wordCount) break;
+            if (cat === categoryKey) continue;
+            const extraWords = (wordBank[cat] || []).filter(
+                w => w.length >= 2 && w.length <= gridSize && !selectedWords.includes(w)
+            );
+            const shuffledExtra = seededShuffle(extraWords, levelId + allCategories.indexOf(cat));
+            selectedWords = [...selectedWords, ...shuffledExtra].slice(0, wordCount);
+        }
+    }
+
+    // Final fallback: if we STILL don't have enough words, reduce wordCount
+    // and fallback to easier settings to prevent a crash
+    if (selectedWords.length === 0) {
+        selectedWords = ['WORD', 'FIND', 'PLAY'].slice(0, Math.min(3, gridSize));
+        wordCount = selectedWords.length;
+        difficulty = 'Easy';
+        reward = 10;
+    } else if (selectedWords.length < wordCount) {
+        wordCount = selectedWords.length;
+    }
 
     // Get localized category name
     const localizedCategory = getCategoryName(categoryKey, language);

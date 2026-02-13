@@ -58,6 +58,12 @@ function gameReducer(state: GameState, action: GameAction): GameState {
         case 'START_LEVEL': {
             const { level, block, grid, placements } = action.payload;
 
+            // Safety: validate level data before proceeding
+            if (!level || !level.words || level.words.length === 0 || !grid || grid.length === 0) {
+                console.error('START_LEVEL: Invalid level data', { level, hasGrid: !!grid });
+                return { ...state, view: 'menu' };
+            }
+
             // Seeded shuffle for colors so color assignment is also deterministic
             const shuffledColors = seededShuffle([...COLORS], level.id);
 
@@ -65,7 +71,7 @@ function gameReducer(state: GameState, action: GameAction): GameState {
                 word: w,
                 found: false,
                 color: shuffledColors[i % shuffledColors.length],
-                cells: placements[w]
+                cells: placements?.[w] ?? []
             }));
 
             return {
@@ -354,27 +360,62 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         if (action.type === 'START_CURRENT_LEVEL') {
-            const target = getLevelWithBlock(progress.currentLevelId);
+            try {
+                const target = getLevelWithBlock(progress.currentLevelId);
 
-            // Pre-calculate grid OUTSIDE of reducer to prevent UI thread hangs on Android
-            const { grid, placements } = generateGrid(target.level.gridSize, target.level.words, target.level.id);
-
-            // Update last play date when starting a level
-            const today = new Date().toISOString().split('T')[0];
-            setProgress(prev => ({
-                ...prev,
-                stats: { ...prev.stats, lastPlayDate: today }
-            }));
-
-            dispatch({
-                type: 'START_LEVEL',
-                payload: {
-                    level: target.level,
-                    block: target.block,
-                    grid,
-                    placements
+                // Validate level has words before attempting grid generation
+                if (!target.level || !target.level.words || target.level.words.length === 0) {
+                    console.error('START_CURRENT_LEVEL: Level has no words', { levelId: progress.currentLevelId, level: target.level });
+                    dispatch({ type: 'SET_VIEW', payload: 'menu' });
+                    return;
                 }
-            });
+
+                // Pre-calculate grid OUTSIDE of reducer to prevent UI thread hangs on Android
+                const { grid, placements } = generateGrid(target.level.gridSize, target.level.words, target.level.id);
+
+                // Validate placements — every word must have at least 1 cell placed
+                const allWordsPlaced = target.level.words.every(w => placements[w] && placements[w].length > 0);
+                if (!allWordsPlaced) {
+                    console.warn('START_CURRENT_LEVEL: Not all words could be placed, retrying with fresh seed');
+                    // Retry with a different seed offset
+                    const retry = generateGrid(target.level.gridSize, target.level.words, target.level.id + 9999);
+                    const retryAllPlaced = target.level.words.every(w => retry.placements[w] && retry.placements[w].length > 0);
+                    if (!retryAllPlaced) {
+                        console.error('START_CURRENT_LEVEL: Failed to place all words even after retry');
+                        dispatch({ type: 'SET_VIEW', payload: 'menu' });
+                        return;
+                    }
+                    dispatch({
+                        type: 'START_LEVEL',
+                        payload: {
+                            level: target.level,
+                            block: target.block,
+                            grid: retry.grid,
+                            placements: retry.placements
+                        }
+                    });
+                } else {
+                    dispatch({
+                        type: 'START_LEVEL',
+                        payload: {
+                            level: target.level,
+                            block: target.block,
+                            grid,
+                            placements
+                        }
+                    });
+                }
+
+                // Update last play date when starting a level
+                const today = new Date().toISOString().split('T')[0];
+                setProgress(prev => ({
+                    ...prev,
+                    stats: { ...prev.stats, lastPlayDate: today }
+                }));
+            } catch (error) {
+                console.error('START_CURRENT_LEVEL: Critical error loading level', error);
+                dispatch({ type: 'SET_VIEW', payload: 'menu' });
+            }
             return;
         }
 
@@ -416,18 +457,23 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         if (action.type === 'COMPLETE_LEVEL') {
-            const stars = calculateStars(state.timeElapsed, state.currentLevel!.difficulty);
-            const isFirstCompletion = !progress.completedLevelIds.includes(state.currentLevel!.id);
-            const reward = isFirstCompletion ? state.currentLevel!.rewardCoins : 5;
+            if (!state.currentLevel || !state.currentBlock) {
+                console.error('COMPLETE_LEVEL: No current level/block data');
+                dispatch(action); // Still forward to reducer for hasProcessedCompletion flag
+                return;
+            }
+            const stars = calculateStars(state.timeElapsed, state.currentLevel.difficulty);
+            const isFirstCompletion = !progress.completedLevelIds.includes(state.currentLevel.id);
+            const reward = isFirstCompletion ? state.currentLevel.rewardCoins : 5;
 
             // 1. Update basic progress
             const newCompletedLevels = isFirstCompletion
-                ? [...progress.completedLevelIds, state.currentLevel!.id]
+                ? [...progress.completedLevelIds, state.currentLevel.id]
                 : progress.completedLevelIds;
 
             const newStars = { ...progress.stars };
-            if (!newStars[state.currentLevel!.id] || stars > newStars[state.currentLevel!.id]) {
-                newStars[state.currentLevel!.id] = stars;
+            if (!newStars[state.currentLevel.id] || stars > newStars[state.currentLevel.id]) {
+                newStars[state.currentLevel.id] = stars;
             }
 
             // 2. Update player stats
