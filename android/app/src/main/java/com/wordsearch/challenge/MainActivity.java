@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.view.View;
 import android.webkit.WebView;
 
+import androidx.activity.EdgeToEdge;
 import androidx.core.view.WindowCompat;
 
 import com.getcapacitor.BridgeActivity;
@@ -14,9 +15,8 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-        // Enable Edge-to-Edge
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     }
 
     @Override
