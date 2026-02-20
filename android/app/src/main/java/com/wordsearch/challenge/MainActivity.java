@@ -7,6 +7,7 @@ import android.view.View;
 import android.webkit.WebView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.WindowCompat;
 
 import com.getcapacitor.BridgeActivity;
@@ -15,6 +16,7 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        SplashScreen.installSplashScreen(this);
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
     }
